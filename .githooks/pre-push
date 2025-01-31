@@ -1,0 +1,14 @@
+#!/bin/bash
+
+readonly jekyll_image="mrxder/jekyll-docker-arm64:latest"
+
+podman run \
+    --interactive \
+    --tty \
+    --rm \
+    -v "./:/var/jekyll" \
+    "$jekyll_image" \
+    bash -c "bundle install && bundle exec jekyll build"
+
+git subtree push --prefix _site origin gh-pages
+
