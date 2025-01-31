@@ -1,3 +1,5 @@
+This is a jekyll project for hosting my blog on GitHub Pages.
+
 # Working with Jekyll
 
 ## Initial set up
