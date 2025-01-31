@@ -7,30 +7,15 @@ This is a jekyll project for hosting my blog on GitHub Pages.
 This is how the jekyll site scaffold was initially created.
 Basically, just run an ephemeral jekyll container to setup the site scaffold.
 
-On x86/amd64 :
-
 ~~~bash
 podman run \
-  --interactive \
-  --tty \
-  --rm \
-  -v "./:/var/jekyll" \
-  jekyll/jekyll \
-  jekyll new . --skip-bundle
-
-~~~
-
-On arm64 :
-
-~~~bash
-podman run \
-  --interactive \
-  --tty \
   --rm \
   -v "./:/var/jekyll" \
   mrxder/jekyll-docker-arm64:latest \
   jekyll new . --skip-bundle
 ~~~
+
+Note : I'm using the `mrxder/jekyll-docker-arm64` image, which run on arm64 since I'm using MacOs. Feel free to switch to the official `jekyll/jekyll` image, which is only supported on x86/amd64. Same goes for the next chapter.
 
 
 ## Work on the site and preview locally
