@@ -60,15 +60,4 @@ Restarting the container will reload the site.
 
 # Site publication
 
-The site is published to GitHub Pages through the "gh-pages" branch.
-A client-side hook is set up to update the "gh-pages" branch whenever a push is issued.
-Cf [.githooks/pre-push](.githooks/pre-push).
-See [Hooks](# Hooks).
-
-# Hooks
-
-The [.githooks](.githooks) directory contains the repository hooks. Configure the local repo to use them :
-
-~~~bash
-git config --local core.hooksPath .githooks/
-~~~
+The site is published to GitHub Pages through the "main" branch.
