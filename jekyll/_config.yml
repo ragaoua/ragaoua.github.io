@@ -33,7 +33,3 @@ github_username:  jekyll
 theme: minima
 plugins:
   - jekyll-feed
-
-exclude:
-  - README.md
-  - deploy.sh

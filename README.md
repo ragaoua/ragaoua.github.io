@@ -10,7 +10,7 @@ Basically, just run an ephemeral jekyll container to setup the site scaffold.
 ~~~bash
 podman run \
   --rm \
-  -v "./:/var/jekyll" \
+  -v "./jekyll:/var/jekyll" \
   mrxder/jekyll-docker-arm64:latest \
   jekyll new . --skip-bundle
 ~~~
@@ -29,7 +29,7 @@ podman run \
   --detach \
   --rm \
   --name jekyll \
-  -v "./:/var/jekyll" \
+  -v "./jekyll:/var/jekyll" \
   -p 4000:4000 \
   mrxder/jekyll-docker-arm64:latest \
   bash -c "bundle install && bundle exec jekyll serve --host=0.0.0.0"
