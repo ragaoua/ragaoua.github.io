@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -xe
 
 readonly publication_branch="gh-pages"
 readonly jekyll_image="mrxder/jekyll-docker-arm64:latest"
@@ -12,7 +12,8 @@ podman run \
   "$jekyll_image" \
   bash -c "bundle install && bundle exec jekyll build"
 
-git branch -D "$publication_branch"
+git branch -D "$publication_branch" || \
+  echo "branch $publication_branch not checked out"
 git switch --orphan "$publication_branch"
 git pull origin "$publication_branch"
 shopt -s extglob
