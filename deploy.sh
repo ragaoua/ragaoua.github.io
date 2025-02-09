@@ -1,9 +1,9 @@
 #!/bin/bash
 
-set -xe
-
 readonly publication_branch="gh-pages"
 readonly jekyll_image="mrxder/jekyll-docker-arm64:latest"
+
+set -xe
 
 podman run \
   --tty \
