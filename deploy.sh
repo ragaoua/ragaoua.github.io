@@ -23,4 +23,4 @@ rm -rf jekyll
 git add .
 git commit
 git push --set-upstream origin "$publication_branch"
-git switch -
+git switch main
