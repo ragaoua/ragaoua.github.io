@@ -45,4 +45,9 @@ Restarting the container will reload the site.
 
 # Site publication
 
-The site is published to GitHub Pages through the "main" branch.
+The site is published to GitHub Pages through the "gh-pages" branch.
+
+~~~bash
+./deploy.sh
+~~~
+
