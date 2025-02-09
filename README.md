@@ -24,7 +24,6 @@ Note : I'm using the `mrxder/jekyll-docker-arm64` image, which run on arm64 sinc
 
 ~~~bash
 podman run \
-  --interactive \
   --tty \
   --detach \
   --rm \
