@@ -6,6 +6,7 @@ baseurl: ""
 url: "https://ragaoua.github.io"
 #twitter_username: jekyllrb
 github_username:  ragaoua
+author: Reda A.
 
 # Build settings
 theme: jekyll-theme-clean-blog
