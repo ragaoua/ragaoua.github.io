@@ -9,3 +9,5 @@ podman run \
   -p 4000:4000 \
   mrxder/jekyll-docker-arm64:latest \
   bash -c "bundle install && bundle exec jekyll serve --host=0.0.0.0"
+
+echo "http://127.0.0.1:4000"
