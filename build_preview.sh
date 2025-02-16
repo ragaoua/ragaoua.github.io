@@ -4,7 +4,7 @@ readonly jekyll_image="mrxder/jekyll-docker-arm64:latest"
 readonly container_name="jekyll-ragaoua-github-io"
 
 if podman container exists "$container_name" 2>&1 >/dev/null ; then
-  podman restart "$container_name"
+  podman restart "$container_name" >/dev/null
 else
   podman run \
     --quiet \
