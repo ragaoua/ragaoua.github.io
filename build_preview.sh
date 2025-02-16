@@ -18,4 +18,7 @@ else
     bash -c "bundle install && bundle exec jekyll serve --host=0.0.0.0"
 fi
 
-echo "http://127.0.0.1:4000"
+echo "Build in progress, run the following command to see progress :"
+echo "podman logs -f $container_name"
+echo
+echo "Preview URL : http://127.0.0.1:4000"
