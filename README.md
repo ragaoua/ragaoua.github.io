@@ -23,18 +23,10 @@ Note : I'm using the `mrxder/jekyll-docker-arm64` image, which run on arm64 sinc
 ### Run a jekyll container, exposing port 4000
 
 ~~~bash
-podman run \
-  --tty \
-  --detach \
-  --rm \
-  --name jekyll \
-  -v "./jekyll:/var/jekyll" \
-  -p 4000:4000 \
-  mrxder/jekyll-docker-arm64:latest \
-  bash -c "bundle install && bundle exec jekyll serve --host=0.0.0.0"
+./build_preview.sh
 ~~~
 
-This will install the dependencies and may take a few seconds. Use "podman logs" to watch the process unfold.
+This may take a few seconds as it needs to install gem dependencies. Use "podman logs" to watch the process unfold.
 
 The `--rm` flag is here to make sure the container is destroyed when stopped so that it doesn't stay around for too long.
 
