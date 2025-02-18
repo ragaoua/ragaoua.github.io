@@ -20,18 +20,22 @@ Note : I'm using the `mrxder/jekyll-docker-arm64` image, which run on arm64 sinc
 
 ## Work on the site and preview locally
 
-### Run a jekyll container, exposing port 4000
+### Build and preview the site 
 
 ~~~bash
 ./build_preview.sh
 ~~~
 
-This may take a few seconds as it needs to install gem dependencies. Use "podman logs" to watch the process unfold.
+This will spawn a container named "jekyll-ragaoua-github-io" that'll run a Jekyll server, and will take a few seconds the first time it's run as it needs to install gems dependencies.
+
+The container uses a volume named "jekyll-ragaoua-github-io-bundler" to persist gems installed though Bundler so that next time it is run,
+it won't go through the initial gem installation again.
 
 The `--rm` flag is here to make sure the container is destroyed when stopped so that it doesn't stay around for too long.
+So, to destroy the container, simply run `podman stop jekyll-ragaoua-github-io`
 
-As long as the container is running, the site will be served by jekyll to be previewed locally.
-Restarting the container will reload the site.
+As long as the container is running, the site will be served by jekyll to be previewed locally on port 4000.
+Running the script again will restart the container to reload the site.
 
 
 # Site publication
