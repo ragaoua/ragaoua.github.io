@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 readonly jekyll_image="mrxder/jekyll-docker-arm64:latest"
 readonly container_name="jekyll-ragaoua-github-io"
 
