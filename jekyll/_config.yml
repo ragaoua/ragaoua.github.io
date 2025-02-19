@@ -4,14 +4,15 @@ description: >-
   Everything PostgreSQL, and more.
 baseurl: ""
 url: "https://ragaoua.github.io"
-#twitter_username: jekyllrb
+twitter_username: 
 github_username:  ragaoua
 author: Reda A.
 
-# Build settings
-theme: jekyll-theme-clean-blog
 plugins:
-  - jekyll-feed
   - jekyll-paginate
+
+theme: jekyll-theme-clean-blog
+
+# Pagination (jekill-paginate)
 paginate: 5
 paginate_path: "/posts/page:num/"
