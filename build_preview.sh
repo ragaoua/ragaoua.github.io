@@ -24,9 +24,6 @@ if podman container exists "$container_name" 2>&1 >/dev/null ; then
   podman stop "$container_name" >/dev/null
 fi
 
-readonly bundler_volume="jekyll-ragaoua-github-io-bundler"
-podman volume create --ignore $bundler_volume >/dev/null
-
 podman run \
   --quiet \
   --tty \
@@ -34,10 +31,11 @@ podman run \
   --rm \
   --name "$container_name" \
   -v "./jekyll:/var/jekyll" \
-  -v "$bundler_volume:/usr/local/bundle" \
   -p 4000:4000 \
   "$jekyll_image" \
-  bash -c "bundle install && bundle exec jekyll serve --host=0.0.0.0"
+  bash -c "bundle config set --local path vendor/bundle && \
+    bundle install && \
+    bundle exec jekyll serve --host=0.0.0.0"
 
 
 echo "Container running, run the following command to see if it's ready :"
