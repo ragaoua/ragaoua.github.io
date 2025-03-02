@@ -28,7 +28,8 @@ Note : I'm using the `mrxder/jekyll-docker-arm64` image, which run on arm64 sinc
 
 This will spawn a container named "jekyll-ragaoua-github-io" that'll run a Jekyll server, and will take a few seconds the first time it's run as it needs to install gems dependencies.
 
-The container uses a volume named "jekyll-ragaoua-github-io-bundler" to persist gems installed though Bundler so that next time it is run,
+The container bind its local "/var/jekyll" directory to the host's "./jekyll" directory to access the jekyll site.
+The gem/Bundler dependencies are persisted inside the "./jekyll/vendor" directory, so that next time it is run,
 it won't go through the initial gem installation again.
 
 The `--rm` flag is here to make sure the container is destroyed when stopped so that it doesn't stay around for too long.
