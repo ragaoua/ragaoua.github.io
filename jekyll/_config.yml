@@ -11,7 +11,7 @@ author: Reda A.
 plugins:
   - jekyll-paginate
 
-theme: jekyll-theme-clean-blog
+theme: null
 
 # Pagination (jekill-paginate)
 paginate: 5
