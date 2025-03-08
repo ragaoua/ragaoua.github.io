@@ -30,7 +30,7 @@ podman run \
   $detach_option \
   --rm \
   --name "$container_name" \
-  -v "./jekyll:/var/jekyll" \
+  -v "$(dirname "$(realpath "$0")")/jekyll:/var/jekyll" \
   -p 4000:4000 \
   "$jekyll_image" \
   bash -c "bundle config set --local path vendor/bundle && \
