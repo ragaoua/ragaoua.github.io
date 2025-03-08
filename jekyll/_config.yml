@@ -1,11 +1,10 @@
 title: Arc
 email: reda.agaoua@gmail.com
-description: >-
-  Everything PostgreSQL, and more.
+description:
 baseurl: ""
 url: "https://ragaoua.github.io"
 twitter_username: 
-github_username:  ragaoua
+github_username: ragaoua
 author: Reda A.
 
 plugins:
