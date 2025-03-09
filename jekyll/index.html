@@ -32,7 +32,7 @@ layout: base
           {% for doc in collection.docs %}
   
             <article class="post-preview">
-              <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
+              <a href="{{ doc.url | prepend: site.baseurl | replace: '//', '/' }}">
                 <h3 class="post-title">{{ doc.title }}</h3>
                 {% if post.subtitle %}
                 <h4 class="post-subtitle">{{ doc.subtitle }}</h4>
@@ -41,7 +41,7 @@ layout: base
                 {% endif %}
               </a>
               <p class="post-meta">
-                Publié le {{ doc.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=doc.content %}            
+                Publié le {{ doc.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=doc.content %}
               </p>
             </article>
   

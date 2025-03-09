@@ -17,13 +17,7 @@ title: Articles
         </h3>
     </a>
     <p class="post-meta">
-      Posted by
-      {% if post.author %}
-        {{ post.author }}
-      {% else %}
-        {{ site.author }}
-      {% endif %}
-      on {{ post.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=post.content %}
+      Publié le {{ post.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=post.content %}
     </p>
   </article>
 
