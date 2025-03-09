@@ -26,19 +26,17 @@ layout: base
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-
-        {{ content }}
-
         <!-- Home Post List -->
+        <h1 class="page-heading">Consulter les derniers articles</h1>
         {% for post in site.posts limit : 5 %}
 
         <article class="post-preview">
           <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
-            <h2 class="post-title">{{ post.title }}</h2>
+            <h3 class="post-title">{{ post.title }}</h3>
             {% if post.subtitle %}
-            <h3 class="post-subtitle">{{ post.subtitle }}</h3>
+            <h4 class="post-subtitle">{{ post.subtitle }}</h4>
             {% else %}
-            <h3 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h3>
+            <h4 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h4>
             {% endif %}
           </a>
           <p class="post-meta">
