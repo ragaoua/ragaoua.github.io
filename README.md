@@ -10,6 +10,7 @@ Basically, just run an ephemeral jekyll container to setup the site scaffold.
 ### Create the site
 
 ~~~bash
+mkdir jekyll
 podman run \
   --rm \
   -v "./jekyll:/var/jekyll" \
