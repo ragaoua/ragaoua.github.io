@@ -28,24 +28,26 @@ layout: base
       <div class="col-lg-8 col-md-10 mx-auto">
         <!-- Home Post List -->
         <h1 class="page-heading">Consulter les derniers articles</h1>
-        {% for post in site.posts limit : 5 %}
-
-        <article class="post-preview">
-          <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
-            <h3 class="post-title">{{ post.title }}</h3>
-            {% if post.subtitle %}
-            <h4 class="post-subtitle">{{ post.subtitle }}</h4>
-            {% else %}
-            <h4 class="post-subtitle">{{ post.excerpt | strip_html | truncatewords: 15 }}</h4>
-            {% endif %}
-          </a>
-          <p class="post-meta">
-            Publié le {{ post.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=post.content %}            
-          </p>
-        </article>
-
-        <hr>
-
+        {% for collection in site.collections %}
+          {% for doc in collection.docs %}
+  
+            <article class="post-preview">
+              <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
+                <h3 class="post-title">{{ doc.title }}</h3>
+                {% if post.subtitle %}
+                <h4 class="post-subtitle">{{ doc.subtitle }}</h4>
+                {% else %}
+                <h4 class="post-subtitle">{{ doc.excerpt | strip_html | truncatewords: 15 }}</h4>
+                {% endif %}
+              </a>
+              <p class="post-meta">
+                Publié le {{ doc.date | date: '%B %d, %Y' }} &middot; {% include read_time.html content=doc.content %}            
+              </p>
+            </article>
+  
+            <hr>
+  
+          {% endfor %}
         {% endfor %}
 
         <!-- Pager -->
