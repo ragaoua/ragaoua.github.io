@@ -15,3 +15,7 @@ theme: null
 # Pagination (jekill-paginate)
 paginate: 5
 paginate_path: "/posts/page:num/"
+
+collections:
+  postgresql:
+    output: true
