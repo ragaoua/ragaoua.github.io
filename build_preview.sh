@@ -35,7 +35,7 @@ podman run \
   "$jekyll_image" \
   bash -c "bundle config set --local path vendor/bundle && \
     bundle install && \
-    bundle exec jekyll serve --host=0.0.0.0"
+    bundle exec jekyll serve --host=0.0.0.0 --livereload --force_polling"
 
 
 echo "Container running, run the following command to see if it's ready :"
