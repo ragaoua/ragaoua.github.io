@@ -2,6 +2,11 @@
 layout: base
 ---
 
+{% assign docs = "" | split: "" %}
+{% for collection in site.collections %}
+  {% assign docs = docs | concat: collection.docs %}
+{% endfor %}
+
 <!-- Page Header -->
 {% if page.background %}
 <header class="masthead" style="background-image: url('{{ page.background | prepend: site.baseurl | replace: '//', '/' }}')">
@@ -28,26 +33,25 @@ layout: base
       <div class="col-lg-8 col-md-10 mx-auto">
         <!-- Home Post List -->
         <h1 class="page-heading">Consulter les derniers articles</h1>
-        {% for collection in site.collections %}
-          {% for doc in collection.docs %}
-  
-            <article class="post-preview">
-              <a href="{{ doc.url | prepend: site.baseurl | replace: '//', '/' }}">
-                <h3 class="post-title">{{ doc.title }}</h3>
-                {% if post.subtitle %}
-                <h4 class="post-subtitle">{{ doc.subtitle }}</h4>
-                {% else %}
-                <h4 class="post-subtitle">{{ doc.excerpt | strip_html | truncatewords: 15 }}</h4>
-                {% endif %}
-              </a>
-              <p class="post-meta">
-                Publié le {{ doc.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=doc.content %}
-              </p>
-            </article>
-  
-            <hr>
-  
-          {% endfor %}
+        {% assign sorted_docs = docs | sort: "date" | reverse %}
+        {% for doc in sorted_docs %}
+
+          <article class="post-preview">
+            <a href="{{ doc.url | prepend: site.baseurl | replace: '//', '/' }}">
+              <h3 class="post-title">{{ doc.title }}</h3>
+              {% if post.subtitle %}
+              <h4 class="post-subtitle">{{ doc.subtitle }}</h4>
+              {% else %}
+              <h4 class="post-subtitle">{{ doc.excerpt | strip_html | truncatewords: 15 }}</h4>
+              {% endif %}
+            </a>
+            <p class="post-meta">
+              Publié le {{ doc.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=doc.content %}
+            </p>
+          </article>
+
+          <hr>
+
         {% endfor %}
 
         <!-- Pager -->
