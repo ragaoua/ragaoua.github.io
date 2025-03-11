@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Introduction
+date: 2025-03-09
 ---
 
 En 2024 et pour la deuxième année consécutive, PostgreSQL a été nommé SGBD préféré des développeurs selon le _Stack Overflow developer survey_.
