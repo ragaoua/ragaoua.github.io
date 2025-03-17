@@ -2,8 +2,13 @@
 
 readonly publication_branch="gh-pages"
 readonly jekyll_image="mrxder/jekyll-docker-arm64:latest"
+readonly preview_container_name="jekyll-ragaoua-github-io"
 
 set -xe
+
+if podman container exists "$preview_container_name" 2>&1 >/dev/null ; then
+  podman stop "$preview_container_name" >/dev/null
+fi
 
 podman run \
   --tty \
