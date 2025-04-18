@@ -6,7 +6,7 @@ readonly preview_container_name="jekyll-ragaoua-github-io"
 
 set -xe
 
-if podman container exists "$preview_container_name" 2>&1 >/dev/null ; then
+if podman container exists "$preview_container_name" >/dev/null 2>&1 ; then
   podman stop "$preview_container_name" >/dev/null
 fi
 
