@@ -52,7 +52,7 @@ Cette méthode présente plusieurs avantages :
 - Il est possible d'auditer le code source pour se conformer à diverses contraintes de sécurité.
 
 Néanmoins et malgré ces avantages, compiler soi-même le code source n'est pas toujours judicieux.
-Cela nécessite de se doter d'un environnement adéquant et de maintenir, celui-ci d'autant que les possibilités d'options offertes à la compilation augmentent la complexité de mise en oeuvre.
+Cela nécessite de se doter d'un environnement adéquat et de maintenir celui-ci, d'autant que les possibilités d'options offertes à la compilation augmentent la complexité de mise en oeuvre.
 
 Pour cette raison, nous ne détaillerons pas le procédé de compilation dans cet article mais vous trouverez en bas de celui-ci les ressources nécessaires pour aller plus loin.
 
