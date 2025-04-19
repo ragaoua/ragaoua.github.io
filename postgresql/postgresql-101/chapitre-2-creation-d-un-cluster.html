@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Chapitre 2 - Création d&#39;un cluster PostgreSQL - Arc
+    
+  </title>
+
+  <meta name="description" content="Un cluster PostgreSQL est un regroupement de plusieurs bases de données partageant, entre autres, des ressources mémoire et CPU, du stockage et des éléments ...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://ragaoua.github.io/postgresql/postgresql-101/chapitre-2-creation-d-un-cluster.html">
+  <link rel="alternate" type="application/rss+xml" title="Arc" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">Arc</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">A propos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Articles</a>
+        </li>
+        <!--
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Page Header -->
+
+  <header class="masthead">
+    
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Chapitre 2 - Création d'un cluster PostgreSQL</h1>
+            
+            <span class="meta">
+              Publié le 19-04-2025 &middot; <span class="reading-time" title="Estimated read time">
+  
+   7 mins </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>Un <em>cluster</em> PostgreSQL est un regroupement de plusieurs bases de données partageant, entre autres, des ressources mémoire et CPU, du stockage et des éléments de configuration.
+L’accès à un cluster nécessite le démarrage préalable d’une “instance”, qui est un ensemble de processus permettant de gérer l’accès au fichiers de données et autres ressources du cluster.</p>
+
+<h1 id="initialisation-dun-cluster">Initialisation d’un cluster</h1>
+
+<p>L’initialisation d’un cluster se fait à l’aide du binaire <code class="language-plaintext highlighter-rouge">initdb</code>, qui doit être exécuté par un utilisateur non privilégié (autre que <code class="language-plaintext highlighter-rouge">root</code> donc).
+Fort heureusement, l’installation de PostgreSQL réalisée dans l’article précédent a eu pour effet de créer un utilisateur “postgres” :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>su - postgres
+</code></pre></div></div>
+
+<p>Pour pouvoir créer le cluster au bon endroit, <code class="language-plaintext highlighter-rouge">initdb</code> a besoin de connaître le chemin vers le répertoire qui hébergera le cluster.
+Ce répertoire peut être défini par l’option <code class="language-plaintext highlighter-rouge">--pgdata</code>/<code class="language-plaintext highlighter-rouge">-D</code>.
+Si l’option n’est pas présente, <code class="language-plaintext highlighter-rouge">initdb</code> utilisera la variable d’environnement <code class="language-plaintext highlighter-rouge">PGDATA</code>.
+Nous allons privilégier cette seconde alternative :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PGDATA</span><span class="o">=</span><span class="s2">"/var/lib/pgsql/data"</span>
+<span class="nb">mkdir</span> <span class="nt">-p</span> <span class="s2">"</span><span class="nv">$PGDATA</span><span class="s2">"</span>
+/usr/pgsql-17/bin/initdb
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The files belonging to this database system will be owned by user "postgres".
+This user must also own the server process.
+
+The database cluster will be initialized with locale "C.utf8".
+The default database encoding has accordingly been set to "UTF8".
+The default text search configuration will be set to "english".
+
+Data page checksums are disabled.
+
+creating directory /var/lib/pgsql/data ... ok
+creating subdirectories ... ok
+selecting dynamic shared memory implementation ... posix
+selecting default max_connections ... 100
+selecting default shared_buffers ... 128MB
+selecting default time zone ... UTC
+creating configuration files ... ok
+running bootstrap script ... ok
+performing post-bootstrap initialization ... ok
+syncing data to disk ... ok
+
+initdb: warning: enabling "trust" authentication for local connections
+initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+
+Success. You can now start the database server using:
+
+    /usr/pgsql-17/bin/pg_ctl -D /var/lib/pgsql/data -l logfile start
+</code></pre></div></div>
+
+<p>Pour consulter les fichiers générés :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-l</span> <span class="s2">"</span><span class="nv">$PGDATA</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>total 56
+-rw-------. 1 postgres postgres     3 Apr 19 13:05 PG_VERSION
+drwx------. 5 postgres postgres    33 Apr 19 13:05 base
+drwx------. 2 postgres postgres  4096 Apr 19 13:05 global
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_commit_ts
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_dynshmem
+-rw-------. 1 postgres postgres  5711 Apr 19 13:05 pg_hba.conf
+-rw-------. 1 postgres postgres  2640 Apr 19 13:05 pg_ident.conf
+drwx------. 4 postgres postgres    68 Apr 19 13:05 pg_logical
+drwx------. 4 postgres postgres    36 Apr 19 13:05 pg_multixact
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_notify
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_replslot
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_serial
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_snapshots
+drwx------. 2 postgres postgres    25 Apr 19 13:05 pg_stat
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_stat_tmp
+drwx------. 2 postgres postgres    18 Apr 19 13:05 pg_subtrans
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_tblspc
+drwx------. 2 postgres postgres     6 Apr 19 13:05 pg_twophase
+drwx------. 3 postgres postgres    60 Apr 19 13:05 pg_wal
+drwx------. 2 postgres postgres    18 Apr 19 13:05 pg_xact
+-rw-------. 1 postgres postgres    88 Apr 19 13:05 postgresql.auto.conf
+-rw-------. 1 postgres postgres 29646 Apr 19 13:05 postgresql.conf
+</code></pre></div></div>
+
+<h1 id="démarrage-dune-instance-et-accès-au-cluster">Démarrage d’une instance et accès au cluster</h1>
+
+<p>Cela étant fait, il n’est pas encore possible d’accéder au cluster tant que instance n’est pas démarrée.
+Pour ce faire, nous allons utiliser un second utilitaire, <code class="language-plaintext highlighter-rouge">postgres</code>.
+De nouveau, l’emplacement du cluster pour l’instance à démarrer doit être donné par l’option <code class="language-plaintext highlighter-rouge">--pgdata</code>/<code class="language-plaintext highlighter-rouge">-D</code> ou la variable d’environnement <code class="language-plaintext highlighter-rouge">PGDATA</code>.
+Cette dernière étant déjà définie :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/postgres
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2025-04-19 13:08:06.683 UTC [79] LOG:  redirecting log output to logging collector process
+2025-04-19 13:08:06.683 UTC [79] HINT:  Future log output will appear in directory "log".
+</code></pre></div></div>
+
+<p>Il est désormais possible de se connecter à l’instance et d’accéder au cluster.
+Par exemple, en utilisant l’utilitaire <code class="language-plaintext highlighter-rouge">psql</code> depuis le même serveur en ouvrant un un nouveau terminal :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/psql
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psql (17.5)
+Type "help" for help.
+
+postgres=# 
+</code></pre></div></div>
+
+<p>Notons que l’exécution de la commande <code class="language-plaintext highlighter-rouge">postgres</code> ne rend pas la main.
+En effet, le serveur (ou l’instance) démarré par la commande s’exécute au premier plan.
+Pour pouvoir exécuter l’instance en arrière plan et permettre que celle-ci continue de s’exécuter même après après la déconnexion de la session, il est préférable d’utiliser <code class="language-plaintext highlighter-rouge">pg_ctl</code>.</p>
+
+<h1 id="pg_ctl">pg_ctl</h1>
+
+<p><code class="language-plaintext highlighter-rouge">pg_ctl</code> est un utilitaire servant à administrer un serveur PostgreSQL.
+Il permet donc, entre autres, de démarrer une instance avec l’option <code class="language-plaintext highlighter-rouge">start</code>.
+L’intérêt de <code class="language-plaintext highlighter-rouge">pg_ctl start</code> en comparaison avec <code class="language-plaintext highlighter-rouge">postgres</code> est que l’instance est exécuté en arrière plan (en réalité, <code class="language-plaintext highlighter-rouge">pg_ctl</code> appelle lui-même la commande <code class="language-plaintext highlighter-rouge">postgres</code>).
+Le démarrage d’une instance est donc généralement fait par la commande :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/pg_ctl
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waiting for server to start....2025-04-19 19:40:03.378 UTC [829] LOG:  redirecting log output to logging collector process
+2025-04-19 19:40:03.378 UTC [829] HINT:  Future log output will appear in directory "log".
+ done
+server started
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">pg_ctl</code> fournit également des options pour arrêter et redémarrer une instance (<code class="language-plaintext highlighter-rouge">pg_ctl stop</code> et <code class="language-plaintext highlighter-rouge">pg_ctl restart</code>), recharger sa configuration (<code class="language-plaintext highlighter-rouge">pg_ctl reload</code>), vérifier son statut (<code class="language-plaintext highlighter-rouge">pg_ctl status</code>) et même pour initialiser un cluster (<code class="language-plaintext highlighter-rouge">pg_ctl initdb</code>).</p>
+
+<p>Le répertoire hébergeant le cluster doit être fournit à <code class="language-plaintext highlighter-rouge">pg_ctl</code> de la même manière qu’avec <code class="language-plaintext highlighter-rouge">initdb</code> ou <code class="language-plaintext highlighter-rouge">postgres</code>.</p>
+
+<h1 id="pour-aller-plus-loin">Pour aller plus loin…</h1>
+
+<p><a href="https://www.postgresql.org/docs/current/creating-cluster.html">Initialisation d’un cluster</a><br />
+<a href="https://www.postgresql.org/docs/current/app-initdb.html">initdb</a><br />
+<a href="https://www.postgresql.org/docs/current/app-pg-ctl.html">pg_ctl</a></p>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/postgresql/postgresql-101/chapitre-1-installation.html" data-toggle="tooltip" data-placement="top" title="Chapitre 1 - Installation">&larr; <span class="d-none d-md-inline">
+              Article </span>précédent</a>
+          
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:reda.agaoua@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/ragaoua">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Reda A. 2025</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+
+</html>
