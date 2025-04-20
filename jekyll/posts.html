@@ -17,7 +17,7 @@ title: Articles
         </h3>
     </a>
     <p class="post-meta">
-      Publié le {{ post.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=post.content %}
+      {{ post.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=post.content %}
     </p>
   </article>
 

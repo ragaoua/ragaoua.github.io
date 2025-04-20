@@ -46,7 +46,7 @@ layout: base
               {% endif %}
             </a>
             <p class="post-meta">
-              Publié le {{ doc.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=doc.content %}
+              {{ doc.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=doc.content %}
             </p>
           </article>
 
