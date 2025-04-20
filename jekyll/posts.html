@@ -3,21 +3,26 @@ layout: page
 title: Articles
 ---
 
-{% for post in site.posts %}
+{% assign all_docs = "" | split: "" %}
+{% for collection in site.collections %}
+  {% assign all_docs = all_docs | concat: collection.docs %}
+{% endfor %}
+{% assign sorted_docs = all_docs | sort: "date" | reverse %}
+{% for doc in sorted_docs %}
 
   <article class="post-preview">
-    <a href="{{ post.url | prepend: site.baseurl | replace: '//', '/' }}">
-      <h2 class="post-title">{{ post.title }}</h2>
-        <h3 class="post-subtitle">
-          {% if post.subtitle %}
-            {{ post.subtitle }}
-          {% else %}
-            {{ post.excerpt | strip_html | truncatewords: 15 }}
-          {% endif %}
-        </h3>
+    <a href="{{ doc.url | prepend: site.baseurl | replace: '//', '/' }}">
+      <h3 class="post-title">{{ doc.title }}</h2>
+      <h4 class="post-subtitle">
+        {% if doc.subtitle %}
+          {{ doc.subtitle }}
+        {% else %}
+          {{ doc.excerpt | strip_html | truncatewords: 15 }}
+        {% endif %}
+      </h4>
     </a>
     <p class="post-meta">
-      {{ post.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=post.content %}
+      {{ doc.date | date: '%d-%m-%Y' }} &middot; {% include read_time.html content=doc.content %}
     </p>
   </article>
 
