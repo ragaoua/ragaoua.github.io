@@ -201,7 +201,7 @@ Il permet donc, entre autres, de démarrer une instance avec l’option <code cl
 L’intérêt de <code class="language-plaintext highlighter-rouge">pg_ctl start</code> en comparaison avec <code class="language-plaintext highlighter-rouge">postgres</code> est que l’instance est exécuté en arrière plan (en réalité, <code class="language-plaintext highlighter-rouge">pg_ctl</code> appelle lui-même la commande <code class="language-plaintext highlighter-rouge">postgres</code>).
 Le démarrage d’une instance est donc généralement fait par la commande :</p>
 
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/pg_ctl
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/pg_ctl start
 </code></pre></div></div>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waiting for server to start....2025-04-19 19:40:03.378 UTC [829] LOG:  redirecting log output to logging collector process
