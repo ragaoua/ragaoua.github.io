@@ -130,7 +130,7 @@ L'intérêt de `pg_ctl start` en comparaison avec `postgres` est que l'instance 
 Le démarrage d'une instance est donc généralement fait par la commande :
 
 ~~~bash
-/usr/pgsql-17/bin/pg_ctl
+/usr/pgsql-17/bin/pg_ctl start
 ~~~
 
 ~~~
