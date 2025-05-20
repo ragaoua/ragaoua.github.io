@@ -99,13 +99,13 @@ Cette dernière étant déjà définie :
 /usr/pgsql-17/bin/postgres
 ~~~
 
-~~~
+~~~text
 2025-04-19 13:08:06.683 UTC [79] LOG:  redirecting log output to logging collector process
 2025-04-19 13:08:06.683 UTC [79] HINT:  Future log output will appear in directory "log".
 ~~~
 
 Il est désormais possible de se connecter à l'instance et d'accéder au cluster.
-Par exemple, en utilisant l'utilitaire `psql` depuis le même serveur en ouvrant un un nouveau terminal :
+Par exemple, en utilisant l'utilitaire `psql` depuis le même serveur en ouvrant un nouveau terminal :
 
 ~~~bash
 /usr/pgsql-17/bin/psql
@@ -118,9 +118,9 @@ Type "help" for help.
 postgres=# 
 ~~~
 
-Notons que l'exécution de la commande `postgres` ne rend pas la main.
-En effet, le serveur (ou l'instance) démarré par la commande s'exécute au premier plan.
-Pour pouvoir exécuter l'instance en arrière plan et permettre que celle-ci continue de s'exécuter même après après la déconnexion de la session, il est préférable d'utiliser `pg_ctl`.
+Notons qu'il a été nécessaire d'ouvrir un nouveau terminal car l'exécution de la commande `postgres` ne rend pas la main.
+En effet, le serveur (ou l'instance) démarré(e) par la commande s'exécute au premier plan.
+Pour pouvoir exécuter l'instance en arrière plan et permettre que celle-ci continue de s'exécuter même après la déconnexion de la session, il est préférable d'utiliser `pg_ctl`.
 
 # pg_ctl
 
