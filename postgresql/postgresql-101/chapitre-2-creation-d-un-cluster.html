@@ -174,12 +174,12 @@ Cette dernière étant déjà définie :</p>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/postgres
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2025-04-19 13:08:06.683 UTC [79] LOG:  redirecting log output to logging collector process
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2025-04-19 13:08:06.683 UTC [79] LOG:  redirecting log output to logging collector process
 2025-04-19 13:08:06.683 UTC [79] HINT:  Future log output will appear in directory "log".
 </code></pre></div></div>
 
 <p>Il est désormais possible de se connecter à l’instance et d’accéder au cluster.
-Par exemple, en utilisant l’utilitaire <code class="language-plaintext highlighter-rouge">psql</code> depuis le même serveur en ouvrant un un nouveau terminal :</p>
+Par exemple, en utilisant l’utilitaire <code class="language-plaintext highlighter-rouge">psql</code> depuis le même serveur en ouvrant un nouveau terminal :</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/psql
 </code></pre></div></div>
@@ -190,9 +190,9 @@ Type "help" for help.
 postgres=# 
 </code></pre></div></div>
 
-<p>Notons que l’exécution de la commande <code class="language-plaintext highlighter-rouge">postgres</code> ne rend pas la main.
-En effet, le serveur (ou l’instance) démarré par la commande s’exécute au premier plan.
-Pour pouvoir exécuter l’instance en arrière plan et permettre que celle-ci continue de s’exécuter même après après la déconnexion de la session, il est préférable d’utiliser <code class="language-plaintext highlighter-rouge">pg_ctl</code>.</p>
+<p>Notons qu’il a été nécessaire d’ouvrir un nouveau terminal car l’exécution de la commande <code class="language-plaintext highlighter-rouge">postgres</code> ne rend pas la main.
+En effet, le serveur (ou l’instance) démarré(e) par la commande s’exécute au premier plan.
+Pour pouvoir exécuter l’instance en arrière plan et permettre que celle-ci continue de s’exécuter même après la déconnexion de la session, il est préférable d’utiliser <code class="language-plaintext highlighter-rouge">pg_ctl</code>.</p>
 
 <h1 id="pg_ctl">pg_ctl</h1>
 
@@ -229,6 +229,9 @@ server started
           <a class="btn btn-primary float-left" href="/postgresql/postgresql-101/chapitre-1-installation.html" data-toggle="tooltip" data-placement="top" title="Chapitre 1 - Installation">&larr; <span class="d-none d-md-inline">
               Article </span>précédent</a>
           
+          
+          <a class="btn btn-primary float-right" href="/postgresql/postgresql-101/chapitre-3-renforcer-votre-installation-postgresql.html" data-toggle="tooltip" data-placement="top" title="Chapitre 3 - Renforcer votre installation PostgreSQL"><span class="d-none d-md-inline">
+              Article </span>suivant &rarr;</a>
           
 
         </div>

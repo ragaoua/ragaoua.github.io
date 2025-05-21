@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Chapitre 3 - Renforcer votre installation PostgreSQL - Arc
+    
+  </title>
+
+  <meta name="description" content="Pour faire suite à l’article précédent, qui traitait de l’initialisation d’un cluster de bases de données, nous allons voir aujourd’hui comment renforcer cet...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://ragaoua.github.io/postgresql/postgresql-101/chapitre-3-renforcer-votre-installation-postgresql.html">
+  <link rel="alternate" type="application/rss+xml" title="Arc" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">Arc</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">A propos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Articles</a>
+        </li>
+        <!--
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Page Header -->
+
+  <header class="masthead">
+    
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Chapitre 3 - Renforcer votre installation PostgreSQL</h1>
+            
+            <span class="meta">
+              21-05-2025 &middot; <span class="reading-time" title="Estimated read time">
+  
+   9 mins </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>Pour faire suite à l’article précédent, qui traitait de l’initialisation d’un cluster de bases de données, nous allons voir aujourd’hui comment renforcer cette installation PostgreSQL initiale.</p>
+
+<p>Bien évidemment, le renforcement d’un cluster PostgreSQL, notamment vis-à-vis de la sécurité des données, est un sujet vaste qui nécessiterait de plus longs développements que ce simple article. L’objectif ici n’est pas d’être exhaustif, mais simplement d’aborder quelques éléments de configuration de base permettant rapidement d’améliorer la robustesse d’un cluster. D’autres sujets comme le chiffrement des communications, la gestion des logs, ou encore la réplication des données seront mis à l’honneur dans de futures publications pour compléter celle-ci.</p>
+
+<h1 id="activation-des-sommes-de-contrôle">Activation des sommes de contrôle</h1>
+
+<p>PostgreSQL stocke ses données par “blocs” dans les fichiers de données. Par défaut, un bloc fait 8Ko.
+Lorsque l’option <code class="language-plaintext highlighter-rouge">checksums</code> est activée, chaque bloc de données contient une somme de contrôle qui est mise à jour à chaque modification du bloc et vérifiée à chaque lecture. Si la somme de contrôle ne correspond pas aux données du bloc, l’instance émet une erreur du type :</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>WARNING:  page verification failed, calculated checksum 23263 but expected 58531
+ERROR:  invalid page in block 0 of relation base/5/16396
+</code></pre></div></div>
+
+<p>L’activation des sommes de contrôle permet donc de détecter les cas de corruption de données.</p>
+
+<p>En contrepartie, cette fonctionnalité impacte négativement les performances du cluster. Il est difficile de s’aventurer à estimer cet impact, car celui-ci dépend sensiblement du type de <em>workload</em> pris en charge par l’instance et peut donc significativement varier. Pour donner un ordre d’idée, l’impact peut aller de 1 ou 2% (pour les cas d’usage “traditionnels”) jusqu’à plus de 10% (pour des cas d’usage impliquant des écritures massives).<br />
+Je recommande tout de même d’activer par défaut les <em>checksums</em> et, seulement si des problèmes de performances sur les IO disque ou le CPU apparaissent, d’étudier la possibilité de les désactiver.</p>
+
+<p>On notera également que la taille des journaux de transaction est plus importante lorsque l’option est activée, ce qui nécessite donc davantage d’espace disque, mais l’impact est négligeable à mon avis (2 à 3%).</p>
+
+<p>Les sommes de contrôle pourraient faire l’objet d’un article à part entière. Nous ne nous étalerons donc pas davantage sur ce sujet aujourd’hui. On précisera simplement que certains providers de services <em>Cloud</em>, CrunchyData et AWS notamment, activent les sommes de contrôle par défaut sans qu’il ne soit possible pour leurs clients de les désactiver. D’ailleurs, les <em>checksums</em> seront activés par défaut dans la prochaine version majeure de PostgreSQL, la version 18.</p>
+
+<p>En attendant, il est nécessaire d’utiliser l’option <code class="language-plaintext highlighter-rouge">--data-checksums</code>/<code class="language-plaintext highlighter-rouge">-k</code> pour activer cette fonctionnalité avec <code class="language-plaintext highlighter-rouge">initdb</code>. Par exemple :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>initdb <span class="nt">--data-checksums</span>
+</code></pre></div></div>
+
+<p>À partir de PostgreSQL 18, l’option <code class="language-plaintext highlighter-rouge">--no-data-checksums</code> permet de désactiver la fonctionnalité.</p>
+
+<p>Enfin, dans les versions antérieures à PostgreSQL 12, il n’était pas possible d’activer/désactiver les <em>checksums</em> au niveau bloc sur un cluster existant. Depuis la version 12, c’est possible via l’utilitaire <code class="language-plaintext highlighter-rouge">pg_checksums</code>.<br />
+Attention, l’activation des <em>checksums</em> sur un cluster existant nécessite un arrêt complet de l’instance et procède d’une réécriture de chaque bloc de données du cluster. Sur un cluster à forte volumétrie, cette opération peut donc prendre un temps conséquent.</p>
+
+<p>Pour plus d’information, consulter la documentation PostgreSQL en rapport avec les <a href="https://www.postgresql.org/docs/current/checksums.html">Data Checksums</a></p>
+
+<h1 id="configuration-de-lauthentification">Configuration de l’authentification</h1>
+
+<p>Par défaut, l’instance d’un cluster nouvellement créé ne requiert aucune authentification pour se connecter à ses bases de données depuis la machine locale (celle hébergeant le cluster).
+Cela permet de mettre en place un environnement de test rapidement, mais c’est bien évidemment un comportement qu’il est recommandé de modifier si l’on veut sécuriser ses données en production.</p>
+
+<p>Pour ce faire, <code class="language-plaintext highlighter-rouge">initdb</code> présente plusieurs options :</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">--auth-host</code> : définit la méthode d’authentification pour les connexions TCP/IP locales, passant donc par la loopback (localhost/127.0.0.1).</li>
+  <li><code class="language-plaintext highlighter-rouge">--auth-local</code> : cette option indique la méthode d’authentification pour les connexions locales passant par la socket unix créée par PostgreSQL au démarrage d’une instance.</li>
+  <li><code class="language-plaintext highlighter-rouge">--auth</code>/<code class="language-plaintext highlighter-rouge">-A</code> : enfin, cette option applique un paramétrage commun aux deux précédents types de connexions, c’est-à-dire à toutes les connexions locales à l’instance.</li>
+</ul>
+
+<p>Il existe plusieurs méthodes d’authentification, qui feront l’objet d’un article à part entière. Pour l’heure, nous allons uniquement nous intéresser aux trois suivantes :</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">trust</code> : c’est la méthode par défaut, qui indique qu’aucune authentification n’est requise.</li>
+  <li><code class="language-plaintext highlighter-rouge">scram-sha-256</code> : cette méthode configure une authentification par mot de passe. Celui-ci doit être chiffré avec <em>scram-sha-256</em> avant d’être envoyé à l’instance.</li>
+  <li><code class="language-plaintext highlighter-rouge">peer</code> : cette méthode n’est valide que pour les connexions locales par socket. Lorsqu’elle est spécifiée, la connexion n’est acceptée que si le nom du rôle base de données de connexion correspond au nom de l’utilisateur système qui initie la connexion. En somme, il s’agit d’une délégation de l’authentification au système sous-jacent.</li>
+</ul>
+
+<p>Pour concilier sécurité et praticité, il est possible de configurer les connexions TCP/IP locales à <code class="language-plaintext highlighter-rouge">scram-sha-256</code>, et les connexions locales via la socket à <code class="language-plaintext highlighter-rouge">peer</code>. Cette dernière configuration permet de se connecter à l’instance depuis l’utilisateur système <code class="language-plaintext highlighter-rouge">postgres</code> à l’utilisateur base de données du même nom (par convention, <code class="language-plaintext highlighter-rouge">postgres</code> est le nom du super-utilisateur par défaut), sans avoir à fournir le mot de passe à chaque connexion, afin de fluidifier les gestes d’administration.</p>
+
+<p>En pratique, la commande à exécuter pour initialiser le cluster ressemble donc à la suivante :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>initdb <span class="nt">--auth-local</span><span class="o">=</span>peer <span class="nt">--auth-host</span><span class="o">=</span>scram-sha-256 <span class="o">[</span>...] <span class="c"># Ne pas oublier d'intégrer d'autres options discutées précédemment, comme --data-checksums</span>
+</code></pre></div></div>
+
+<p>Les méthodes d’authentification peuvent ensuite être modifiées dans le fichier <code class="language-plaintext highlighter-rouge">pg_hba.conf</code> présent à la racine du répertoire de données du cluster. De nouveau, ce fichier sera traité dans un futur article.</p>
+
+<p>Il est bien évidemment possible de requérir une authentification par mot de passe pour toutes les connexions, auquel cas l’option <code class="language-plaintext highlighter-rouge">--auth=scram-sha-256</code> peut être fournie en lieu et place des options mentionnées ci-dessus. Attention, cela nécessite que le super-utilisateur dispose d’un mot de passe, ce que nous allons traiter dans la suite de cet article.</p>
+
+<h1 id="mot-de-passe-du-super-utilisateur">Mot de passe du super-utilisateur</h1>
+
+<p>Un cluster PostgreSQL doit disposer d’au moins un super-utilisateur.
+À la création d’un cluster, un tel utilisateur est donc créé, portant le nom de l’utilisateur système qui a exécuté <code class="language-plaintext highlighter-rouge">initdb</code>, sauf si l’option <code class="language-plaintext highlighter-rouge">--username</code>/<code class="language-plaintext highlighter-rouge">-U</code> est spécifiée. Par convention, il s’agit souvent d’un utilisateur nommé <code class="language-plaintext highlighter-rouge">postgres</code>.<br />
+Au sein du cluster PostgreSQL, cet utilisateur (on parle de “rôle”) est l’équivalent de <code class="language-plaintext highlighter-rouge">root</code> et dispose alors de tous les droits.</p>
+
+<p>Il est donc recommandé de sécuriser les accès à ce rôle en particulier. Par défaut, il ne dispose d’aucun mot de passe, ce qui interdit l’accès à l’instance via ce rôle, sauf si des méthodes d’authentification comme <code class="language-plaintext highlighter-rouge">trust</code> ou <code class="language-plaintext highlighter-rouge">peer</code> sont configurées. <code class="language-plaintext highlighter-rouge">trust</code> étant à proscrire pour des raisons évidentes, et <code class="language-plaintext highlighter-rouge">peer</code> ne pouvant être utilisée que pour les connexions locales, il faut donc configurer un mot de passe pour le super-utilisateur de sorte à pouvoir y accéder depuis l’extérieur de la machine hébergeant le cluster.</p>
+
+<p>Pour cela, nous pouvons de nouveau faire appel aux options d’<code class="language-plaintext highlighter-rouge">initdb</code> :</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">--pwfile</code> : cette option permet de définir le chemin vers un fichier contenant le mot de passe du rôle (attention à sécuriser l’accès ou à supprimer ce fichier après initialisation du cluster).</li>
+  <li><code class="language-plaintext highlighter-rouge">--pwprompt</code> : lorsque cette option est utilisée, <code class="language-plaintext highlighter-rouge">initdb</code> affichera un message demandant de saisir le mot de passe.</li>
+</ul>
+
+<p>Par exemple :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> <span class="o">&gt;</span>bootstrap-superuser-pw <span class="o">&lt;&lt;</span><span class="no">EOF</span><span class="sh">
+&lt;MOT_DE_PASSE&gt;
+</span><span class="no">EOF
+</span>initdb <span class="nt">--pwfile</span><span class="o">=</span><span class="s2">"./bootstrap-superuser-pw"</span> <span class="o">[</span>...] <span class="c"># Autres options...</span>
+</code></pre></div></div>
+
+<p>Ou encore :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>initdb <span class="nt">--pwprompt</span> <span class="o">[</span>...] <span class="c"># Autres options...</span>
+</code></pre></div></div>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[...]
+Enter new superuser password: &lt;MOT_DE_PASSE&gt;
+Enter it again: &lt;MOT_DE_PASSE&gt;
+[...]
+</code></pre></div></div>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/postgresql/postgresql-101/chapitre-2-creation-d-un-cluster.html" data-toggle="tooltip" data-placement="top" title="Chapitre 2 - Création d'un cluster PostgreSQL">&larr; <span class="d-none d-md-inline">
+              Article </span>précédent</a>
+          
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:reda.agaoua@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/ragaoua">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Reda A. 2025</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+
+</html>
