@@ -6,7 +6,6 @@ date:
 
 Dans PostgreSQL 17, il existe 359 paramètres de configuration. Nous aurons l'occasion de couvrir une grande partie de ceux-ci tout au long de cette série d'articles. Pour lors, nous allons aborder quelques généralités autour du paramétrage de PostgreSQL, et nous en profiterons pour introduire les paramètres de bases (ceux qui ne nécessitent pas de connaître de concepts complexes en amont ou d’avoir des prérequis particuliers).
 
-
 # postgresql.conf
 
 La configuration d'un cluster PostgreSQL peut provenir de diverses sources, la principale étant le fichier de configuration du cluster, traditionnellement nommé `postgresql.conf` et placé à la racine du répertoire des données (`PGDATA`). Le nom et la localisation de ce fichier ne peuvent être définis qu'au démarrage d'une instance, via l'option `--config-file` des commandes `postgres` ou `pg_ctl start`. Ce paramètre est généralement laissé à sa valeur par défaut, à savoir `<PGDATA>/postgresql.conf`.
@@ -42,25 +41,16 @@ sourceline      |
 pending_restart | f
 ~~~
 
-La vue nous renseigne sur la valeur actuelle du paramètre (`setting`), mais aussi sa valeur minimale et maximale (`min_val`, `max_val`) lorsqu’il s’agit d’un nombre, ou les valeurs possibles (`enumvals`) lorsque celles-ci sont strictement restreintes. On dispose aussi de sa valeur par défaut (`boot_val`), et de la valeur qu’il prendra s’il est réinitialisé (`reset_val`).
-
+La vue nous renseigne sur la valeur actuelle du paramètre (`setting`), mais aussi sa valeur minimale et maximale (`min_val`, `max_val`) lorsqu’il s’agit d’un nombre, ou les valeurs possibles (`enumvals`) lorsque celles-ci sont strictement restreintes. Entre-autres, on dispose aussi de sa valeur par défaut (`boot_val`), et de la valeur qu’il prendra s’il est réinitialisé (`reset_val`).
 
 # Paramètres de configuration basiques
 
-Maintenant, parlons des paramètres de bases de PostgreSQL. Ces paramètres, ce ne sont pas nécessairement les premiers paramètres qu’on considère lorsqu’on configure un cluster, mais ce sont des paramètres assez simples à appréhender. Ils ne nécessitent pas de connaître plus de choses que ce qu’on a déjà vu jusqu’ici, donc allons-y :
+Ce que je désigne comme étant des "paramètres de bases", ce sont des paramètres assez simples à appréhender et qui ne font pas appel à des prérequis particuliers. Il ne s'agit pas nécessairement des paramètres les plus importants, mais 
 
-- cluster_name
-- listen_addresses
-    Liste des IP/hostnames du serveur sur lesquelles l’instance écoutera pour recevoir des connexions
-    Possibilité d’utiliser une wildcard : *
-    Peut être vide, auquel cas l’instance ne sera pas accessible à travers TCP/IP
-    Défaut : localhost
-- port
-    Port TCP sur lequel l’instance écoute pour recevoir des connexions
-    Défaut : 5432
-- unix_socket_directories
-    Liste de répertoires dans lesquelles l’instance créera, au démarrage, un socket Unix pour permettre les connexions locales.
-    Peut être vide, auquel cas il ne sera pas possible de se connecter en "local" à l’instance
+- `cluster_name` : ignore
+- `listen_addresses` : Liste des IP/hostnames du serveur sur lesquelles l’instance sera disponible pour recevoir des connexions. Si la valeur de ce paramètre est vide, l’instance ne sera pas accessible à travers TCP/IP.
+- `port` : port TCP/IP sur lequel l’instance sera exposé pour recevoir des connexions. Par défaut, la valeur est `5432`.
+- unix_socket_directories : Liste de répertoires dans lesquelles l’instance créera, au démarrage, un socket Unix pour permettre les connexions locales. Si la valeur de ce paramètre est vide, aucune socket n'est créée et aucune connexion locale ne sera possible.
 - unix_socket_group
 - unix_socket_permissions
 - config_file
