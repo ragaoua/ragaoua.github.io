@@ -34,11 +34,11 @@ Le paquet `postgresql17-server` installe les binaires et bibliothèques permetta
 Les binaires qui vont le plus nous intéresser se situent sous `/usr/pgsql-17/bin`.
 
 En plus de ce paquet, nous allons en considérer 2 autres :
+
 - `postgresql17-contrib` : ce paquet installe des composants supplémentaires, principalement des extensions, intégrables au moteur de base.
   Voir [l'annexe F de la documentation](https://www.postgresql.org/docs/current/contrib.html)
 - `postgresql17-llvmjit` : ce paquet permet d'activer la compilation "à la volée" (_Just-in-Time_, ou JIT) basée sur LLVM.
   Cette fonctionnalité permet d'améliorer les performances en compilant dynamiquement certaines opérations vers du code machine.
-
 
 # Installer PostgreSQL à partir des sources
 
@@ -46,6 +46,7 @@ PostgreSQL étant Open Source, il est également possible de compiler soi-même 
 Après quoi, il est tout de même recommandé de construire des paquets afin de simplifier le processus d'installation, mais également de mise à jour et de maintenance des binaires.
 
 Cette méthode présente plusieurs avantages :
+
 - Elle offre l'opportunité de modifier le code avant compilation pour intégrer des fonctionnalités supplémentaires ou modifier des comportements existants.
 - Elle permet de choisir les bibliothèques, et les versions de celles-ci, dont dépendront les binaires une fois compilés.
 - Les binaires peuvent être compilés avec un grand nombre d'options pour supporter différents langages et fonctionnalités ou pour modifier certains comportements.
@@ -56,7 +57,6 @@ Cela nécessite de se doter d'un environnement adéquat et de maintenir celui-ci
 
 Pour cette raison, nous ne détaillerons pas le procédé de compilation dans cet article, mais vous trouverez en bas de celui-ci les ressources nécessaires pour aller plus loin.
 
-
 # Et la conteneurisation alors ?
 
 A l'heure où cet article est publié (début 2025), il serait dommage de ne pas parler de conteneurisation, qui semble bien devenir le standard en terme de gestion de déploiement applicatif.
@@ -65,9 +65,8 @@ Il est en effet possible de faire tourner PostgreSQL en tant qu'application cont
 "L'installation", dans ce cadre, correspondrait alors simplement à disposer d'une image pouvant ensuite permettre de faire tourner un conteneur exécutant PostgreSQL.
 Cette image pourrait être récupérée depuis n'importe quel _registry_, ou construite manuellement.
 
-Le sujet "PostgreSQL sous conteneur" mériterait une série d'article à part.
+Le sujet "PostgreSQL sous conteneur" mériterait une série d'articles à part.
 Je ne vais donc pas m'y attarder davantage, d'autant que la conteneurisation s'accompagne d'un degré d'abtraction qui, je pense, nuit à notre objectif premier, qui est de comprendre les concepts de base de PostgreSQL.
-
 
 # Pour aller plus loin...
 

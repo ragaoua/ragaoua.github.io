@@ -27,7 +27,7 @@ mkdir -p "$PGDATA"
 /usr/pgsql-17/bin/initdb
 ~~~
 
-~~~
+~~~text
 The files belonging to this database system will be owned by user "postgres".
 This user must also own the server process.
 
@@ -62,7 +62,7 @@ Pour consulter les fichiers générés :
 ls -l "$PGDATA"
 ~~~
 
-~~~
+~~~text
 total 56
 -rw-------. 1 postgres postgres     3 Apr 19 13:05 PG_VERSION
 drwx------. 5 postgres postgres    33 Apr 19 13:05 base
@@ -111,7 +111,7 @@ Par exemple, en utilisant l'utilitaire `psql` depuis le même serveur en ouvrant
 /usr/pgsql-17/bin/psql
 ~~~
 
-~~~
+~~~text
 psql (17.5)
 Type "help" for help.
 
@@ -126,14 +126,14 @@ Pour pouvoir exécuter l'instance en arrière plan et permettre que celle-ci con
 
 `pg_ctl` est un utilitaire servant à administrer un serveur PostgreSQL.
 Il permet donc, entre autres, de démarrer une instance avec l'option `start`.
-L'intérêt de `pg_ctl start` en comparaison avec `postgres` est que l'instance est exécuté en arrière plan (en réalité, `pg_ctl` appelle lui-même la commande `postgres`).
+L'intérêt de `pg_ctl start` en comparaison avec `postgres` est que l'instance est exécutée en arrière plan (en réalité, `pg_ctl` appelle lui-même la commande `postgres`).
 Le démarrage d'une instance est donc généralement fait par la commande :
 
 ~~~bash
 /usr/pgsql-17/bin/pg_ctl start
 ~~~
 
-~~~
+~~~text
 waiting for server to start....2025-04-19 19:40:03.378 UTC [829] LOG:  redirecting log output to logging collector process
 2025-04-19 19:40:03.378 UTC [829] HINT:  Future log output will appear in directory "log".
  done
