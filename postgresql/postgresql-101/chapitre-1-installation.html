@@ -114,6 +114,7 @@ De plus, ces dépôts ne fournissent qu’une partie des outils et extensions de
 Les binaires qui vont le plus nous intéresser se situent sous <code class="language-plaintext highlighter-rouge">/usr/pgsql-17/bin</code>.</p>
 
 <p>En plus de ce paquet, nous allons en considérer 2 autres :</p>
+
 <ul>
   <li><code class="language-plaintext highlighter-rouge">postgresql17-contrib</code> : ce paquet installe des composants supplémentaires, principalement des extensions, intégrables au moteur de base.
 Voir <a href="https://www.postgresql.org/docs/current/contrib.html">l’annexe F de la documentation</a></li>
@@ -127,6 +128,7 @@ Cette fonctionnalité permet d’améliorer les performances en compilant dynami
 Après quoi, il est tout de même recommandé de construire des paquets afin de simplifier le processus d’installation, mais également de mise à jour et de maintenance des binaires.</p>
 
 <p>Cette méthode présente plusieurs avantages :</p>
+
 <ul>
   <li>Elle offre l’opportunité de modifier le code avant compilation pour intégrer des fonctionnalités supplémentaires ou modifier des comportements existants.</li>
   <li>Elle permet de choisir les bibliothèques, et les versions de celles-ci, dont dépendront les binaires une fois compilés.</li>
@@ -147,7 +149,7 @@ Cela nécessite de se doter d’un environnement adéquat et de maintenir celui-
 “L’installation”, dans ce cadre, correspondrait alors simplement à disposer d’une image pouvant ensuite permettre de faire tourner un conteneur exécutant PostgreSQL.
 Cette image pourrait être récupérée depuis n’importe quel <em>registry</em>, ou construite manuellement.</p>
 
-<p>Le sujet “PostgreSQL sous conteneur” mériterait une série d’article à part.
+<p>Le sujet “PostgreSQL sous conteneur” mériterait une série d’articles à part.
 Je ne vais donc pas m’y attarder davantage, d’autant que la conteneurisation s’accompagne d’un degré d’abtraction qui, je pense, nuit à notre objectif premier, qui est de comprendre les concepts de base de PostgreSQL.</p>
 
 <h1 id="pour-aller-plus-loin">Pour aller plus loin…</h1>

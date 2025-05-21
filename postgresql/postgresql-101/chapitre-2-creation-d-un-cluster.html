@@ -106,7 +106,7 @@ Nous allons privilégier cette seconde alternative :</p>
 /usr/pgsql-17/bin/initdb
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The files belonging to this database system will be owned by user "postgres".
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The files belonging to this database system will be owned by user "postgres".
 This user must also own the server process.
 
 The database cluster will be initialized with locale "C.utf8".
@@ -139,7 +139,7 @@ Success. You can now start the database server using:
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-l</span> <span class="s2">"</span><span class="nv">$PGDATA</span><span class="s2">"</span>
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>total 56
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>total 56
 -rw-------. 1 postgres postgres     3 Apr 19 13:05 PG_VERSION
 drwx------. 5 postgres postgres    33 Apr 19 13:05 base
 drwx------. 2 postgres postgres  4096 Apr 19 13:05 global
@@ -184,7 +184,7 @@ Par exemple, en utilisant l’utilitaire <code class="language-plaintext highlig
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/psql
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psql (17.5)
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psql (17.5)
 Type "help" for help.
 
 postgres=# 
@@ -198,13 +198,13 @@ Pour pouvoir exécuter l’instance en arrière plan et permettre que celle-ci c
 
 <p><code class="language-plaintext highlighter-rouge">pg_ctl</code> est un utilitaire servant à administrer un serveur PostgreSQL.
 Il permet donc, entre autres, de démarrer une instance avec l’option <code class="language-plaintext highlighter-rouge">start</code>.
-L’intérêt de <code class="language-plaintext highlighter-rouge">pg_ctl start</code> en comparaison avec <code class="language-plaintext highlighter-rouge">postgres</code> est que l’instance est exécuté en arrière plan (en réalité, <code class="language-plaintext highlighter-rouge">pg_ctl</code> appelle lui-même la commande <code class="language-plaintext highlighter-rouge">postgres</code>).
+L’intérêt de <code class="language-plaintext highlighter-rouge">pg_ctl start</code> en comparaison avec <code class="language-plaintext highlighter-rouge">postgres</code> est que l’instance est exécutée en arrière plan (en réalité, <code class="language-plaintext highlighter-rouge">pg_ctl</code> appelle lui-même la commande <code class="language-plaintext highlighter-rouge">postgres</code>).
 Le démarrage d’une instance est donc généralement fait par la commande :</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/pg_ctl start
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waiting for server to start....2025-04-19 19:40:03.378 UTC [829] LOG:  redirecting log output to logging collector process
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>waiting for server to start....2025-04-19 19:40:03.378 UTC [829] LOG:  redirecting log output to logging collector process
 2025-04-19 19:40:03.378 UTC [829] HINT:  Future log output will appear in directory "log".
  done
 server started
