@@ -1,0 +1,2 @@
+Une sauvegarde, c’est une assurance. C’est l’assurance que, dans le futur, on va pouvoir restaurer nos données. Et on a besoin de cette assurance pour se prémunir d’un certain nombre de situations. Par exemple, un administrateur peut très bien supprimer une table par mégarde, ou par malveillance ; le serveur qui héberge les données peut subir un crash irréversible, ou même bruler.
+Les sauvegardes peuvent aussi plus simplement servir à faire des copies
