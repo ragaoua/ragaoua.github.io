@@ -25,3 +25,4 @@ Vacuum/autovacuum
 Maintenance operations : Vacuum full, reindex
 Large objects
 SSL
+encryption (tde, luks, pgcrypto, pgsodium...)
