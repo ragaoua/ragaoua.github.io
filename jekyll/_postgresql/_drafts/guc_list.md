@@ -3,7 +3,23 @@
 List of all parameters from PG 17 left to discuss, to keep track of which were addressed in the "101" series.
 
 Basic configuration
-(Cf Chapter 4. Configuration)
+cluster_name
+listen_addresses
+port
+unix_socket_directories
+unix_socket_group
+unix_socket_permissions
+config_file
+data_directory
+data_directory_mode
+hba_file
+ident_file
+external_pid_file
+max_connections
+superuser_reserved_connections
+data_checksums
+full_page_writes
+search_path
 
 Archiving
 archive_cleanup_command
