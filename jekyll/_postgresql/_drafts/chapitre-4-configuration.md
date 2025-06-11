@@ -5,7 +5,7 @@ date:
 ---
 
 On dénombre pas moins de 378 paramètres de configuration dans PostgreSQL 17, et ce nombre continue d'augmenter d'une version à l'autre.  
-Nous aurons l'occasion de couvrir une grande partie de ceux-ci tout au long de cette série d'articles. Aujourd'hui, nous allons aborder quelques généralités autour du paramétrage de PostgreSQL, et nous en profiterons pour introduire quelques paramètres de base.
+Nous aurons l'occasion de couvrir une grande partie de ces paramètres tout au long de cette série d'articles. Aujourd'hui, nous allons aborder quelques généralités autour de la configuration de PostgreSQL, et nous en profiterons pour introduire quelques paramètres de base.
 
 Nous nous intéresserons ici aux paramètres de configuration internes du serveur PostgreSQL, en excluant le paramétrage lié au contrôle d'accès et à l'authentification des utilisateurs, qui fera l'objet d'un article à part entière.
 
@@ -42,7 +42,7 @@ sourceline      |
 pending_restart | f
 ~~~
 
-La vue nous renseigne sur la valeur actuelle du paramètre (`setting`), mais aussi sa valeur minimale et maximale lorsqu’il s’agit d’un nombre (`min_val`, `max_val`), ou les valeurs possibles lorsque celles-ci sont strictement restreintes (`enumvals`). Entre-autres, on dispose aussi de la valeur par défaut de chaque paramètre(`boot_val`), et de la valeur qu’il prendra s’il est réinitialisé (`reset_val`).
+La vue nous renseigne sur la valeur actuelle du paramètre (`setting`), mais aussi sa valeur minimale et maximale lorsqu’il s’agit d’un nombre (`min_val`, `max_val`), ou les valeurs possibles lorsque celles-ci sont strictement restreintes (`enumvals`). Entre-autres, on dispose aussi de la valeur par défaut de chaque paramètre (`boot_val`), et de la valeur qu’il prendra s’il est réinitialisé (`reset_val`).
 
 # Sources de configuration
 
