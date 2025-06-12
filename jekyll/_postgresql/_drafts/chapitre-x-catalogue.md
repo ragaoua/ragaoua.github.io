@@ -1,0 +1,1 @@
+Introduire le pg_catalog (quid d'information_schema ?)
