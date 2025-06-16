@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Chapitre 3 - Connexion à une instance PostgreSQL - Arc
+    
+  </title>
+
+  <meta name="description" content="Dans le chapitre précédent, nous avons créé un cluster et démarré son instance. Nous avons ensuite tenté d’accéder à l’instance avec psql afin de vérifier qu...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://ragaoua.github.io/postgresql/postgresql-101/chapitre-3-connexion-a-une-instance.html">
+  <link rel="alternate" type="application/rss+xml" title="Arc" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">Arc</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">A propos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Articles</a>
+        </li>
+        <!--
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Page Header -->
+
+  <header class="masthead">
+    
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Chapitre 3 - Connexion à une instance PostgreSQL</h1>
+            
+            <span class="meta">
+              16-06-2025 &middot; <span class="reading-time" title="Estimated read time">
+  
+   7 mins </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>Dans le chapitre précédent, nous avons créé un cluster et démarré son instance.
+Nous avons ensuite tenté d’accéder à l’instance avec <code class="language-plaintext highlighter-rouge">psql</code> afin de vérifier qu’elle était bien démarrée et accessible.</p>
+
+<p>Dans cet article, nous allons détailler les modalités d’accès à une instance PostgreSQL afin d’introduire de nouveaux concepts autour du SGBD.</p>
+
+<h1 id="port-découte-de-linstance">Port d’écoute de l’instance</h1>
+
+<p>Lorsqu’une instance PostgreSQL est démarrée, elle se lie à un port spécifique pour écouter les connexions entrantes. Par défaut, il s’agit du port “5432”, mais cette valeur est configurable via le paramètre <code class="language-plaintext highlighter-rouge">port</code>.</p>
+
+<p>De même, la plupart des clients (comme <code class="language-plaintext highlighter-rouge">psql</code>) ciblent par défaut le port “5432”, mais permettent également de se connecter à un port différent. Par exemple, pour une instance démarrée sur le port 5454 :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/psql <span class="nt">--port</span><span class="o">=</span>5454
+</code></pre></div></div>
+
+<h1 id="accès-local-à-linstance">Accès local à l’instance</h1>
+
+<p>Au démarrage d’une instance PostgreSQL, un ou plusieurs <a href="https://fr.wikipedia.org/wiki/Berkeley_sockets#Socket_unix">sockets Unix</a> sont créés dans des emplacements définis par la configuration du cluster.
+Ces sockets peuvent ensuite être utilisés par des processus locaux à la machine hébergeant le serveur PostgreSQL pour communiquer avec celui-ci, et notamment pour se connecter à l’instance et accéder aux bases de données du cluster.</p>
+
+<p>Ce comportement est contrôlé par le paramètre <code class="language-plaintext highlighter-rouge">unix_socket_directories</code>. Si sa valeur est vide, aucun socket n’est créé, rendant impossible la connexion locale à l’instance.
+La valeur par défaut du paramètre est <strong>“/run/postgresql, /tmp”</strong>. Un socket sera donc créé sous le répertoire <code class="language-plaintext highlighter-rouge">/run/postgresql</code>, et un autre sous <code class="language-plaintext highlighter-rouge">/tmp</code>. Le nom d’un socket PostgreSQL est de la forme “.s.PGSQL.&lt;port&gt;”. Il s’agit d’un fichier caché :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> <span class="nt">-al</span> /run/postgresql/
+</code></pre></div></div>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>total 4
+drwxrwxrwt. 1 root     root     53 Jun 11 19:58 .
+dr-xr-xr-x. 1 root     root     73 Dec 24 19:49 ..
+srwxrwxrwx. 1 postgres postgres  0 Jun 11 19:58 .s.PGSQL.5432
+-rw-------. 1 postgres postgres 50 Jun 11 19:58 .s.PGSQL.5432.lock
+</code></pre></div></div>
+
+<p>Pour ce qui est de <code class="language-plaintext highlighter-rouge">psql</code>, le binaire recherche par défaut la présence d’un socket dans le répertoire <code class="language-plaintext highlighter-rouge">/run/postgresql</code>. L’option <code class="language-plaintext highlighter-rouge">--hostname</code>/<code class="language-plaintext highlighter-rouge">-h</code> permet de modifier ce comportement. Par exemple :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/psql <span class="nt">--hostname</span><span class="o">=</span>/tmp
+</code></pre></div></div>
+
+<p>C’est ce mécanisme qui a été utilisé dans l’article précédent. L’accès à l’instance s’est donc fait via le socket Unix et le port 5432.</p>
+
+<h1 id="accès-tcpip">Accès TCP/IP</h1>
+
+<p>L’accès à une instance n’est bien évidemment pas réservé aux processus locaux. Il est possible de se connecter aux bases de données d’un cluster à distance, depuis un serveur applicatif ou un poste de travail par exemple.</p>
+
+<p>À cet effet, le paramètre <code class="language-plaintext highlighter-rouge">listen_addresses</code> contrôle la liste des interfaces IP sur lesquelles l’instance se lie et écoute les connexions clientes.<br />
+À l’instar de <code class="language-plaintext highlighter-rouge">unix_socket_directories</code>, <code class="language-plaintext highlighter-rouge">listen_addresses</code> peut être vide, ce qui interdit les accès TCP/IP. La valeur par défaut est <strong>“localhost”</strong>, ce qui n’autorise les accès TCP/IP que par le biais de la <a href="https://fr.wikipedia.org/wiki/Loopback">loopback</a>.</p>
+
+<p>Concernant <code class="language-plaintext highlighter-rouge">psql</code>, l’option <code class="language-plaintext highlighter-rouge">--hostname</code>/<code class="language-plaintext highlighter-rouge">-h</code> est de nouveau utilisée pour se connecter à une instance en TCP/IP :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/psql <span class="nt">--hostname</span><span class="o">=</span>127.0.0.1
+<span class="c"># Ou encore</span>
+/usr/pgsql-17/bin/psql <span class="nt">--hostname</span><span class="o">=</span>192.168.52.135 <span class="c"># Exemple d'adresse IP sur laquelle un serveur PostgreSQL serait démarré</span>
+</code></pre></div></div>
+
+<h1 id="utilisateur-et-base-de-données-de-connexion">Utilisateur et base de données de connexion</h1>
+
+<p>La connexion à une instance PostgreSQL doit se faire avec un utilisateur spécifique. Il s’agit ici d’un utilisateur de base de données, un objet du cluster PostgreSQL auquel sont associés des droits ainsi qu’une configuration d’authentification.</p>
+
+<p>De plus, à la connexion, il est nécessaire de spécifier une base de données du cluster à laquelle on souhaite se connecter. Ce sont les objets de cette base de données qui seront accessibles par la session ouverte (en plus des objets globaux du cluster, comme les utilisateurs).</p>
+
+<p>Par défaut, <code class="language-plaintext highlighter-rouge">psql</code> tente de se connecter avec l’utilisateur portant le même nom que l’utilisateur système et d’accéder à la base de données portant le même nom que l’utilisateur de connexion.<br />
+Dans l’article précédent, nous disposions d’un utilisateur système nommé <code class="language-plaintext highlighter-rouge">postgres</code>, ce qui correspond au nom du super-utilisateur par défaut et de la première base de données créés par le cluster lors de son initialisation.</p>
+
+<p><code class="language-plaintext highlighter-rouge">psql</code> fournit les options <code class="language-plaintext highlighter-rouge">--username</code>/<code class="language-plaintext highlighter-rouge">-U</code> et <code class="language-plaintext highlighter-rouge">--dbname</code>/<code class="language-plaintext highlighter-rouge">-d</code> pour définir respectivement l’utilisateur et la base de données de connexion :</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/pgsql-17/bin/psql <span class="nt">--username</span><span class="o">=</span>myuser <span class="nt">--dbname</span><span class="o">=</span>mydb
+</code></pre></div></div>
+
+<h1 id="la-chaîne-de-connexion">La chaîne de connexion</h1>
+
+<p>Plutôt que de spécifier les paramètres de connexion via des options (<code class="language-plaintext highlighter-rouge">--hostname</code>, <code class="language-plaintext highlighter-rouge">--port</code>, …), certains utilitaires, comme <code class="language-plaintext highlighter-rouge">psql</code>, acceptent également une “chaîne de connexion” qui peut prendre deux formats :</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psql "host=localhost port=5432 username=myrole dbname=mydb connect_timeout=10"
+</code></pre></div></div>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>psql "postgresql://myrole@localhost/mydb?connect_timeout=10"
+</code></pre></div></div>
+
+<p>Pour <code class="language-plaintext highlighter-rouge">psql</code>, cette chaîne de connexion permet de définir des paramètres supplémentaires pour la connexion à établir. L’exemple ci-dessus utilise le paramètre <code class="language-plaintext highlighter-rouge">connect_timeout</code>, qui définit un délai d’attente pour la connexion. <code class="language-plaintext highlighter-rouge">psql</code> ne fournit pas d’autres moyens de définir ces paramètres, contrairement aux options <code class="language-plaintext highlighter-rouge">--host</code> ou <code class="language-plaintext highlighter-rouge">--dbname</code>.</p>
+
+<p>L’ensemble des paramètres de connexion sont décrits dans la <a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS">section 32.1.2 de la documentation PostgreSQL</a>.</p>
+
+<h1 id="un-mot-sur-lauthentification">Un mot sur l’authentification</h1>
+
+<p>Pour sécuriser l’accès aux données, il est bien évidemment nécessaire de mettre en place un mécanisme d’authentification des connexions et de gestion des habilitations.</p>
+
+<p>Je n’aborderai pas ces aspects en détail ici, car ils feront l’objet d’un article dédié.</p>
+
+<h1 id="ressources">Ressources</h1>
+
+<p><a href="https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-UNIX-SOCKET-DIRECTORIES">unix_socket_directories</a> (voir également <a href="https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-UNIX-SOCKET-GROUP">unix_socket_group</a> et <a href="https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-UNIX-SOCKET-PERMISSIONS">unix_socket_permissions</a>)<br />
+<a href="https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-LISTEN-ADDRESSES">listen_addresses</a><br />
+<a href="https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-PORT">port</a><br />
+<a href="https://www.postgresql.org/docs/current/app-psql.html">psql</a>
+<a href="https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING">Chaîne de connexion</a></p>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/postgresql/postgresql-101/chapitre-2-creation-d-un-cluster.html" data-toggle="tooltip" data-placement="top" title="Chapitre 2 - Création d'un cluster PostgreSQL">&larr; <span class="d-none d-md-inline">
+              Article </span>précédent</a>
+          
+          
+          <a class="btn btn-primary float-right" href="/postgresql/postgresql-101/chapitre-4-renforcer-votre-installation-postgresql.html" data-toggle="tooltip" data-placement="top" title="Chapitre 4 - Renforcer votre installation PostgreSQL"><span class="d-none d-md-inline">
+              Article </span>suivant &rarr;</a>
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:reda.agaoua@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/ragaoua">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Reda A. 2025</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+
+</html>
