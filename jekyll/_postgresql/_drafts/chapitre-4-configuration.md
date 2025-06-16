@@ -1,17 +1,17 @@
 ---
 layout: post
-title: Chapitre 4 - Configuration
-date: 
+title: Chapitre 5 - Configuration
+date: 2025-06-16
 ---
 
-On dénombre pas moins de 378 paramètres de configuration dans PostgreSQL 17, et ce nombre continue d'augmenter d'une version à l'autre.  
-Nous aurons l'occasion de couvrir une grande partie de ces paramètres tout au long de cette série d'articles. Aujourd'hui, nous allons aborder quelques généralités autour de la configuration de PostgreSQL, et nous en profiterons pour introduire quelques paramètres de base.
+On dénombre pas moins de 378 paramètres de configuration dans PostgreSQL 17, et ce nombre continue de croître à chaque nouvelle version.  
+Nous aurons l'occasion d'examiner une grande partie de ces paramètres tout au long de cette série d'articles. Aujourd'hui, nous allons aborder quelques généralités concernant la configuration de PostgreSQL, et nous en profiterons pour introduire quelques paramètres fondamentaux.
 
-Nous nous intéresserons ici aux paramètres de configuration internes du serveur PostgreSQL, en excluant le paramétrage lié au contrôle d'accès et à l'authentification des utilisateurs, qui fera l'objet d'un article à part entière.
+Nous nous concentrerons ici sur les paramètres de configuration internes du serveur PostgreSQL, en excluant le paramétrage lié au contrôle d'accès et à l'authentification des utilisateurs, qui fera l'objet d'un article distinct.
 
 # Prologue : pg_settings
 
-Tout cluster PostgreSQL possède un ensemble de "vues système", qui fournissent des informations sur le cluster, l'instance et leur état. Ces vues sont mises à disposition à travers le schéma `pg_catalog` disponible dans chaque base de données du cluster.
+Tout cluster PostgreSQL possède un ensemble de "vues système" fournissant des informations sur le cluster, l'instance et leur état. Ces vues sont disponibles via le schéma `pg_catalog` présent dans chaque base de données du cluster.
 
 Avant d'entrer dans le vif du sujet, nous allons nous intéresser à une vue système qui va nous accompagner tout au long de cet article. Cette vue, nommée `pg_settings`, fournit des informations en rapport avec la configuration du cluster :
 
@@ -42,12 +42,12 @@ sourceline      |
 pending_restart | f
 ~~~
 
-La vue nous renseigne sur la valeur actuelle du paramètre (`setting`), mais aussi sa valeur minimale et maximale lorsqu’il s’agit d’un nombre (`min_val`, `max_val`), ou les valeurs possibles lorsque celles-ci sont strictement restreintes (`enumvals`). Entre-autres, on dispose aussi de la valeur par défaut de chaque paramètre (`boot_val`), et de la valeur qu’il prendra s’il est réinitialisé (`reset_val`).
+La vue nous renseigne sur la valeur actuelle du paramètre (`setting`), mais aussi sa valeur minimale et maximale lorsqu’il s’agit d’un nombre (`min_val`, `max_val`), ou les valeurs possibles lorsque celles-ci sont strictement limitées (`enumvals`). On dispose également de la valeur par défaut de chaque paramètre (`boot_val`), et de la valeur qu’il prendra s’il est réinitialisé (`reset_val`).
 
 # Sources de configuration
 
-La configuration d'un cluster PostgreSQL peut provenir de diverses sources, avec une hiérarchisation entre celles-ci. Si un paramètre est défini à plusieurs endroits, c’est le niveau de configuration le plus spécifique qui prévaut.  
-On note que `pg_settings` présente le champs `source` qui nous renseigne sur la provenance d'un paramétrage.
+La configuration d'un cluster PostgreSQL peut provenir de différentes sources, avec une hiérarchie entre celles-ci. Si un paramètre est défini à plusieurs endroits, c’est le niveau de configuration le plus spécifique qui prévaut.  
+Notons que `pg_settings` présente le champ `source` qui indique la provenance d'un paramétrage.
 
 Nous allons aborder ces canaux de configuration dans l'ordre croissant de leur spécificité, et donc de leur prévalence.
 

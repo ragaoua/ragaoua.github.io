@@ -104,5 +104,5 @@ Je n'aborderai pas ces aspects en détail ici, car ils feront l'objet d'un artic
 [unix_socket_directories](https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-UNIX-SOCKET-DIRECTORIES) (voir également [unix_socket_group](https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-UNIX-SOCKET-GROUP) et [unix_socket_permissions](https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-UNIX-SOCKET-PERMISSIONS))  
 [listen_addresses](https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-LISTEN-ADDRESSES)  
 [port](https://www.postgresql.org/docs/current/runtime-config-connection.html#GUC-PORT)  
-[psql](https://www.postgresql.org/docs/current/app-psql.html)
+[psql](https://www.postgresql.org/docs/current/app-psql.html)  
 [Chaîne de connexion](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING)
