@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Chapitre 3 - Connexion à une instance PostgreSQL
-date:
+date: 2025-06-16
 ---
 
 Dans le chapitre précédent, nous avons créé un cluster et démarré son instance.

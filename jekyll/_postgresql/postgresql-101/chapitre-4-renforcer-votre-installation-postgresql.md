@@ -1,12 +1,14 @@
 ---
 layout: post
-title: Chapitre 3 - Renforcer votre installation PostgreSQL
-date: 2025-05-21
+title: Chapitre 4 - Renforcer votre installation PostgreSQL
+date: 2025-06-16
 ---
 
-Pour faire suite à l'article précédent, qui traitait de l'initialisation d'un cluster de bases de données, nous allons voir aujourd'hui comment renforcer cette installation PostgreSQL initiale.
+Pour faire suite au chapitre 2 de cette série, qui traitait de l'initialisation d'un cluster de bases de données, nous allons voir aujourd'hui comment renforcer cette installation PostgreSQL initiale.
 
 Bien évidemment, le renforcement d'un cluster PostgreSQL, notamment vis-à-vis de la sécurité des données, est un sujet vaste qui nécessiterait de plus longs développements que ce simple article. L'objectif ici n'est pas d'être exhaustif, mais simplement d'aborder quelques éléments de configuration de base permettant rapidement d'améliorer la robustesse d'un cluster. D'autres sujets comme le chiffrement des communications, la gestion des logs, ou encore la réplication des données seront mis à l'honneur dans de futures publications pour compléter celle-ci.
+
+_Note : cet article constituait initialement le troisième chapitre de la série._
 
 # Activation des sommes de contrôle
 
