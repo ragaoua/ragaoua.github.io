@@ -325,6 +325,6 @@ Pour compléter la documentation sur deux types de contexte :
 
 # Ressources supplémentaires
 
-[Paramètres de configuration](https://www.postgresql.org/docs/17/config-setting.html)  
-[pg_settings](https://www.postgresql.org/docs/17/view-pg-settings.html)  
+[Paramètres de configuration](https://www.postgresql.org/docs/current/config-setting.html)  
+[pg_settings](https://www.postgresql.org/docs/current/view-pg-settings.html)  
 [Preset Options](https://www.postgresql.org/docs/current/runtime-config-preset.html)
