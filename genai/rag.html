@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    Vous n&#39;avez pas besoin de base vectorielle pour votre RAG - Arc
+    
+  </title>
+
+  <meta name="description" content="Lorsqu’on parle de RAG (Retrieval-Augmented Generation), on finit très vite par parler d’IA générative, de découpage en chunks, de bases vectorielles et de v...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://ragaoua.github.io/genai/rag.html">
+  <link rel="alternate" type="application/rss+xml" title="Arc" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">Arc</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">A propos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Articles</a>
+        </li>
+        <!--
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Page Header -->
+
+  <header class="masthead">
+    
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>Vous n'avez pas besoin de base vectorielle pour votre RAG</h1>
+            
+            <span class="meta">
+              05-06-2026 &middot; <span class="reading-time" title="Estimated read time">
+  
+   8 mins </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>Lorsqu’on parle de RAG (<em>Retrieval-Augmented Generation</em>), on finit très vite
+par parler d’IA générative, de découpage en <em>chunks</em>, de bases vectorielles et
+de vectorisation.</p>
+
+<p>Mais concevoir un “système RAG” (on reviendra sur ce terme) revient davantage à
+développer un moteur de recherche qu’une solution d’IA à proprement parler.
+Partant de là, est-il nécessaire d’utiliser une base vectorielle et un
+pipeline complexe de <em>chunking</em> pour rechercher des mots clés dans un
+SharePoint ?</p>
+
+<h1 id="revenir-à-la-base">Revenir à la base</h1>
+
+<p>Avant d’entrer dans le vif du sujet, il est important de faire un rappel : le
+RAG, qu’est ce que c’est ? C’est une stratégie employée dans le cadre de la
+conception d’un chatbot, qui consiste à intercepter une requête exprimée en
+langage naturel, rechercher dans un corpus documentaire les éléments de réponse
+potentiels, et fournir le tout (la requête initiale + les résultats de la
+recherche) à un LLM afin qu’il réponde à la demande en se basant sur des
+éléments contextuels.</p>
+
+<p>C’est l’une des techniques employées pour pallier 2 des plus grandes
+limitations des systèmes d’IA générative : les hallucinations et l’horizon des
+connaissances (le <em>cutoff</em>).</p>
+
+<p>Le RAG n’est donc pas une typologie de bases de données comme on peut parfois le
+lire ou l’entendre avec des expressions comme “base RAG”. Le terme décrit
+simplement une solution technique conceptuelle à une famille de problèmes. On
+peut néanmoins parler de “système RAG” pour décrire une solution qui implémente
+ce concept.</p>
+
+<h1 id="le-plus-important-dans-rag-ce-nest-pas-la-génération">Le plus important dans <em>RAG</em>, ce n’est pas la génération</h1>
+
+<p>Un système RAG est un pipeline qui se compose alors de 2 parties :</p>
+
+<ul>
+  <li>Une partie amont, qui consiste à préparer la base de connaissances (à
+commencer par stocker celles-ci) afin qu’elle permette la recherche à venir
+;</li>
+  <li>Et une partie aval, qui est la recherche dans ce corpus d’éléments de réponse
+à une requête utilisateur.
+C’est alors que les données sont fournies à un LLM pour demander à générer
+une réponse.</li>
+</ul>
+
+<p>Présenté ainsi, il paraît clair que le challenge consiste avant-tout à
+concevoir un système optimisé pour la recherche d’information, ce qu’on appelle
+alors <strong>un moteur de recherche</strong>. C’est donc sur le <strong>R</strong> de RAG (<em>Retrieval</em>)
+que l’effort doit se concentrer.</p>
+
+<p>Toutefois, le <strong>G</strong> de RAG (<em>Generation</em>) ne doit pas être délaissé. Il est
+tout de même pertinent de choisir un LLM adapté au cas d’usage ou de travailler
+le <em>system prompt</em> du LLM utilisé par exemple. Mais ces choix auront un impact
+moins important sur la qualité du résultat que ceux portant sur l’architecture
+du moteur de recherche. Comme me l’a dit un ingénieur d’un fameux éditeur
+français de LLM : <em>“Il vaut mieux disposer d’un LLM moyen avec un système de
+retrieving performant, qu’un LLM à l’état de l’art avec un retriever
+sous-optimal”</em> (je paraphrase).</p>
+
+<h1 id="là-où-je-veux-en-venir">Là où je veux en venir</h1>
+
+<p>J’ai eu des discussions avec des ingénieurs qui me soutenaient qu’on ne pouvait
+pas parler de RAG sans base vectorielle, ou que l’intérêt d’un tel système
+était diminué, ou encore que le RAG nécessitait qu’un LLM retravaille la
+requête avant d’être envoyée au <em>retriever</em>. Et bien que je ne nie pas l’intérêt
+de ces stratégies, je pense qu’il est contre-productif d’affirmer qu’elles sont
+nécessaires et indissociables de la notion même de RAG.</p>
+
+<p>Je pense qu’un système RAG performant est un système dont la partie <em>retriever</em>
+renvoie des données d’une pertinence jugée élevée, et ce peu importe la méthode
+utilisée, base vectorielle ou non.</p>
+
+<p>J’ai moi-même travaillé l’année dernière sur un chatbot avec une composante
+RAG qui présentait de meilleurs résultats une fois que nous avons associé
+recherche sémantique (dans une base vectorielle donc) et <em>full-text search</em>
+(recherche “plein texte”, ce que Google fait depuis des années, bien que ce
+soit avec un tout autre niveau de sophistication). Sur certains types de
+recherche, la recherche sémantique réduisait même la qualité des réponses. Pour
+les autres, la recherche hybride renvoyait systématiquement de meilleurs
+résultats.</p>
+
+<p>Plus récemment, j’ai été intégré à une discussion pour concevoir une solution
+permettant de “faire du RAG” sur des documents stockés dans SharePoint. La
+conversation s’est rapidement orientée vers un système basé sur la réplication
+des données SharePoint dans une base vectorielle, avec un pipeline de
+<em>chunking</em>, un <em>refresh</em> quotidien, et une rustine permettant de tirer les
+<em>metadata</em> de chaque document afin de déterminer si l’utilisateur derrière la
+requête disposait des droits nécessaires pour accéder au document. Pour ma
+part, je ne suis pas un expert SharePoint, mais j’ai défendu l’idée selon
+laquelle Microsoft Search, le moteur de recherche intégré aux solutions
+Microsoft (Teams, Office, SharePoint, etc.), ferait l’affaire, du moins pour
+une première version du cas d’usage. Une solution sans base vectorielle mais
+qui ne nécessite pas de mettre en place une structure complexe à concevoir et à
+maintenir.</p>
+
+<p>Dans le même registre, on voit également apparaître les bases graphes dans la
+conversation, notamment via l’approche <em>GraphRAG</em>, qui consiste à modéliser
+les relations entre entités du corpus pour enrichir la recherche. La piste est
+intéressante, mais elle ajoute une couche de complexité non négligeable :
+extraction des entités, construction et maintenance du graphe, choix d’un
+schéma. Tout cela pour un bénéfice qui dépend fortement de la nature du corpus
+et du type de questions posées. Là encore, ce n’est ni une condition
+nécessaire pour parler de RAG, ni une garantie de meilleurs résultats.</p>
+
+<h1 id="le-mot-de-la-fin">Le mot de la fin</h1>
+
+<p>Les moteurs de vectorisation issus des dernières avancées en Deep Learning
+sont des outils remarquables. La possibilité de stocker les représentations
+vectorielles de textes dans des bases de données spécialisées a ouvert la voie
+à de nouvelles architectures de recherche d’information. La recherche
+sémantique a des avantages indéniables sur les autres techniques de recherche
+(prise en compte native des synonymes et termes proches, traitement plus
+holistique du texte, performances accrues dans certains cas, etc.). Il en va
+de même pour les bases de données graphes.</p>
+
+<p>Mais ces avantages ne doivent pas nous faire oublier qu’il existe souvent plus
+d’une solution à une problématique technique, et que certaines de ces solutions
+ont des implications importantes qui peuvent réduire voire effacer leur
+intérêt.</p>
+
+<p>Alors il est essentiel de faire preuve d’esprit critique et de rigueur :
+interroger les définitions toutes faites, peser leurs implications, revenir au
+besoin initial et oser proposer des solutions plus simples, plus abordables.
+C’est d’autant plus vrai dans un domaine comme l’IA générative, où
+l’effervescence technologique pousse à adopter chaque nouvel outil comme s’il
+était la réponse absolue et universelle.</p>
+
+<p><em>(Et puis, vous avez vu le prix des licences ?)</em></p>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:reda.agaoua@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/ragaoua">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Reda A. 2026</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+
+</html>
