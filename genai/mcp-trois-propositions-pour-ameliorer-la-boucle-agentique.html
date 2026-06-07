@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    MCP : trois propositions pour améliorer la boucle agentique - Arc
+    
+  </title>
+
+  <meta name="description" content="Depuis sa première version publiée en novembre 2024, la spécification MCP n’a cessé de vivre et d’évoluer. Sa prochaine révision est prévue pour le 28 juille...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://ragaoua.github.io/genai/mcp-trois-propositions-pour-ameliorer-la-boucle-agentique.html">
+  <link rel="alternate" type="application/rss+xml" title="Arc" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">Arc</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">A propos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Articles</a>
+        </li>
+        <!--
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Page Header -->
+
+  <header class="masthead">
+    
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>MCP : trois propositions pour améliorer la boucle agentique</h1>
+            
+            <span class="meta">
+              07-06-2026 &middot; <span class="reading-time" title="Estimated read time">
+  
+   9 mins </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>Depuis sa première version publiée en novembre 2024, la spécification MCP n’a
+cessé de vivre et d’évoluer. Sa prochaine révision est prévue pour le 28
+juillet 2026, et il y a fort à parier qu’il ne s’agira pas de la dernière.</p>
+
+<p>La spécification évolue car les usages changent ou se précisent. MCP est un
+standard “ouvert” (<em>open standard</em>), c’est-à-dire qu’il est développé par une
+communauté, et non une seule entité. Dans cet esprit, je souhaite partager mes
+propositions d’amélioration de la <em>spec</em> après près de 2 ans à utiliser, mais
+aussi à développer, des serveurs MCP en tout genre.</p>
+
+<h1 id="la-boucle-agentique">La boucle agentique</h1>
+
+<p>Difficile de parler de MCP sans parler d’agents, et des cas d’usage associés.</p>
+
+<p>Ce que permet MCP (et ce que permettait déjà le <em>function calling</em>/<em>tool
+calling</em>), c’est de généraliser la logique qui sous-tend la <strong>boucle
+agentique</strong>. Un agent, c’est finalement un pipeline assez simple :</p>
+
+<ol>
+  <li>L’utilisateur envoie une requête ;</li>
+  <li>L’agent peut répondre, ou demander à exécuter une des fonctions dont son
+concepteur l’a doté pour répondre à la demande ;</li>
+  <li>Si l’agent émet une demande d’appel de fonction, le pipeline l’exécute après
+avoir vérifié la légitimité de la demande*. Le résultat de la fonction est
+ensuite renvoyé à l’agent et le pipeline reprend à l’étape 2. Si l’agent n’a
+pas émis de demande d’appel de fonction, le texte qu’il a généré est envoyé à
+l’utilisateur et le pipeline s’arrête.</li>
+</ol>
+
+<p>* Il s’agit essentiellement de vérifier que la fonction fait bien partie de
+celles fournies à l’agent dans son <em>system prompt</em>, et que les inputs de
+celle-ci sont corrects (nom et types des arguments de la fonction).</p>
+
+<p><img src="/assets/boucle-agentique.svg" alt="Boucle agentique" style="max-width: 100%;" /></p>
+
+<p>C’est justement sur cette boucle agentique que mes propositions se concentrent.
+L’objectif est d’enrichir la réponse envoyée par le serveur à un client MCP
+afin que celui-ci utilise ces informations pour modifier la logique interne de
+la boucle.</p>
+
+<p>Pourquoi ? Pour contribuer au caractère déterministe et prévisible du pipeline
+agentique, car c’est selon moi un élément clé pour garantir la stabilité de ces
+systèmes qui reposent initialement sur une brique non déterministe.</p>
+
+<h1 id="terminer-la-boucle">Terminer la boucle</h1>
+
+<p>L’idée est la suivante : lorsqu’un <em>tool</em> renvoie une réponse, le serveur peut
+inclure, dans les <em>metadata</em>, un marqueur signifiant la fin de la boucle.
+Lorsque le pipeline agentique détecte ce <em>flag</em>, il renvoie la réponse de
+l’appel de fonction au LLM, mais omet tous les <em>tools</em> qu’il fournissait
+jusqu’à présent pour la prochaine itération de la boucle. Le LLM n’aura alors
+aucun <em>tool</em> à sa disposition durant ce “tour” et sera donc contraint (autant
+qu’un LLM peut l’être) de générer une réponse finale pour l’utilisateur.</p>
+
+<p>L’intérêt est de redonner au concepteur du serveur MCP, qui connaît la
+sémantique réelle de chaque <em>tool</em>, la main sur la terminaison de la boucle,
+plutôt que de toujours laisser cette décision au LLM.</p>
+
+<p>Par exemple, une fonction qui soumet un formulaire, si elle échoue, peut clore
+la boucle afin d’éviter que le LLM ne retente l’action car le contexte n’y est
+pas propice (éviter de surcharger l’infra, connaissance a priori qu’un <em>retry</em>
+sort toujours en échec sur un type d’appel d’API, etc.). Ou inversement, on
+peut concevoir un <em>tool</em> qui ne met fin à la boucle que si son exécution se
+termine avec succès, pour justement permettre au LLM de corriger et réessayer
+en cas d’échec.</p>
+
+<p>Cela évite de recourir à des stratagèmes qui consistent à intégrer, dans le
+retour de la fonction, des instructions au LLM lui indiquant de ne pas retenter
+l’action par exemple, ou de rendre compte à l’utilisateur immédiatement sans
+appeler d’autres fonctions. Pourquoi recourir au LLM lorsqu’on peut l’éviter ?</p>
+
+<p>Aujourd’hui, rien n’empêche un LLM d’enchaîner les appels de fonction “par
+sécurité” ou par excès de zèle, ce qui peut se traduire par une latence accrue,
+des coûts supplémentaires en tokens, et un risque non nul d’effets de bord
+indésirables (un second email, un doublon de ticket, etc.). En déléguant ce
+signal au serveur, on remplace un comportement probabiliste par une garantie
+déterministe, ce qui est particulièrement précieux pour les opérations
+sensibles ou non idempotentes.</p>
+
+<h1 id="court-circuiter-le-llm">Court-circuiter le LLM</h1>
+
+<p>Semblable au précédent, ce marqueur pourrait être émis au retour d’un <em>tool
+call</em> et signifier la fin de la boucle, mais avec une nuance importante : le
+retour de la fonction doit aller directement à l’utilisateur. Le LLM n’a alors
+pas accès à ce résultat.</p>
+
+<p>Prenons l’exemple d’un <em>tool</em> qui exécute une requête SQL de type <code class="language-plaintext highlighter-rouge">SELECT</code> et
+qui retourne un grand nombre de lignes. Si l’objectif de ce <em>tool</em> est de
+fournir le résultat exact de la requête à l’utilisateur (par exemple pour un
+export ou une consultation directe), alors faire transiter ces lignes par le
+LLM n’a aucun intérêt : au mieux il les recopie à l’identique en consommant des
+tokens et en ajoutant de la latence, au pire il les tronque ou en altère le
+contenu. Le marqueur permet ici de court-circuiter le LLM et de remettre le jeu
+de données directement à l’utilisateur, préservant ainsi son intégrité.</p>
+
+<p>Autre exemple : un <em>tool</em> qui retourne des informations qu’on ne souhaite pas
+exposer au LLM. Il peut s’agir de données sensibles pour lesquelles on veut
+limiter au maximum la surface d’exposition (informations personnelles, secrets,
+données soumises à des contraintes réglementaires, etc.), ou simplement de
+données volumineuses et peu pertinentes pour l’agent et qui ne feraient que
+parasiter sa fenêtre de contexte. Dans les deux cas, le marqueur permet
+d’acheminer le résultat vers l’utilisateur sans que le LLM ne le voie jamais
+passer.</p>
+
+<h1 id="paginer-les-résultats">Paginer les résultats</h1>
+
+<p>Certains <em>tools</em> renvoient une quantité importante de données. Il peut alors
+être intéressant, voire nécessaire, de mettre en place un mécanisme de
+pagination.</p>
+
+<p>J’ai rencontré ce cas l’année dernière sur un <em>tool</em> qu’on avait développé pour
+récupérer les logs d’un serveur sur une plage horaire donnée, utilisé par un
+agent pour faire du <em>troubleshooting</em>. La fonction pouvait renvoyer plusieurs
+milliers de lignes, alors que l’information recherchée pouvait se trouver dans
+les premières. Tout charger à chaque appel, c’était payer le coût (en tokens,
+latence et saturation de contexte) d’un volume de données dont on exploitait
+rarement l’intégralité. Nous avons donc implémenté une pagination sur ce <em>tool</em>
+et ajouté des instructions contextuelles à destination du LLM dans la réponse
+retournée pour l’informer que le résultat obtenu était partiel, et lui indiquer
+comment obtenir la prochaine page de données.</p>
+
+<p>Et si la pagination était intégrée à la logique interne de la boucle agentique
+? Un <em>tool</em> pourrait indiquer qu’il ne renvoie qu’une partie des données, et le
+client MCP en charge d’implémenter la boucle pourrait identifier ce cas de
+figure, et fournir au LLM les outils supplémentaires permettant de récupérer,
+au besoin, le reste des données.</p>
+
+<p>Notons que la pagination est un mécanisme qui existe déjà dans la spécification
+MCP depuis sa première version, mais celle-ci s’applique uniquement aux
+opérations de type “list” (lister les <em>resources</em>, les <em>prompts</em>, les <em>tools</em>,
+etc.). La proposition consiste donc à étendre le mécanisme aux opérations
+d’exécution (j’ai évoqué les <em>tools</em>, mais cela pourrait également s’appliquer
+aux <em>resources</em> par exemple).</p>
+
+<h1 id="points-en-suspens">Points en suspens</h1>
+
+<p>Ces propositions restent des idées, avec des points d’attention laissés
+volontairement en suspens, pour susciter la discussion. Je ne dis pas
+grand-chose sur la forme des <em>metadata</em> à renvoyer, ni ne tranche sur la nature
+des marqueurs pour les 2 premières propositions (le client MCP peut-il les
+ignorer ?). Je n’aborde pas la façon de combler le “trou” dans l’historique
+conversationnel induit par le marqueur de retour immédiat. Et je ne rentre pas
+dans le détail du mécanisme de pagination (utilisation d’un curseur ? d’un
+offset ?).</p>
+
+<p>Ces propositions méritent encore d’être mûries avant d’être soumises à la
+communauté MCP. Ce sera l’objet, peut-être, d’un prochain article.</p>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/genai/vous-n-avez-pas-besoin-d-une-base-vectorielle-pour-votre-rag.html" data-toggle="tooltip" data-placement="top" title="Vous n'avez pas besoin de base vectorielle pour votre RAG">&larr; <span class="d-none d-md-inline">
+              Article </span>précédent</a>
+          
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:reda.agaoua@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://www.linkedin.com/in/reda-agaoua">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/ragaoua">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Reda A. 2026</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+
+</html>
