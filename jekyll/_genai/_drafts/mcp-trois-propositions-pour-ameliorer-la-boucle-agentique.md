@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "MCP : quelques suggestions"
+title: "MCP : trois propositions pour améliorer la boucle agentique"
 date: 2026-06-06
 ---
 
