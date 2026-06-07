@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "MCP : trois propositions pour améliorer la boucle agentique"
-date: 2026-06-06
+date: 2026-06-07
 ---
 
 Depuis sa première version publiée en novembre 2024, la spécification MCP n'a
