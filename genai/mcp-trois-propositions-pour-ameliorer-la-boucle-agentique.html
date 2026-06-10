@@ -70,7 +70,7 @@
             <h1>MCP : trois propositions pour améliorer la boucle agentique</h1>
             
             <span class="meta">
-              07-06-2026 &middot; <span class="reading-time" title="Estimated read time">
+              10-06-2026 &middot; <span class="reading-time" title="Estimated read time">
   
    9 mins </span>
 
@@ -92,16 +92,15 @@ juillet 2026, et il y a fort à parier qu’il ne s’agira pas de la dernière.
 <p>La spécification évolue car les usages changent ou se précisent. MCP est un
 standard “ouvert” (<em>open standard</em>), c’est-à-dire qu’il est développé par une
 communauté, et non une seule entité. Dans cet esprit, je souhaite partager mes
-propositions d’amélioration de la <em>spec</em> après près de 2 ans à utiliser, mais
-aussi à développer, des serveurs MCP en tout genre.</p>
+propositions d’amélioration de la <em>spec</em> après près de 2 ans à utiliser et
+développer des serveurs MCP en tout genre.</p>
 
 <h1 id="la-boucle-agentique">La boucle agentique</h1>
 
 <p>Difficile de parler de MCP sans parler d’agents, et des cas d’usage associés.</p>
 
-<p>Ce que permet MCP (et ce que permettait déjà le <em>function calling</em>/<em>tool
-calling</em>), c’est de généraliser la logique qui sous-tend la <strong>boucle
-agentique</strong>. Un agent, c’est finalement un pipeline assez simple :</p>
+<p>MCP permet de généraliser la logique qui sous-tend la <strong>boucle agentique</strong>. Un
+agent, c’est finalement un pipeline assez simple :</p>
 
 <ol>
   <li>L’utilisateur envoie une requête ;</li>
@@ -109,14 +108,15 @@ agentique</strong>. Un agent, c’est finalement un pipeline assez simple :</p>
 concepteur l’a doté pour répondre à la demande ;</li>
   <li>Si l’agent émet une demande d’appel de fonction, le pipeline l’exécute après
 avoir vérifié la légitimité de la demande*. Le résultat de la fonction est
-ensuite renvoyé à l’agent et le pipeline reprend à l’étape 2. Si l’agent n’a
-pas émis de demande d’appel de fonction, le texte qu’il a généré est envoyé à
-l’utilisateur et le pipeline s’arrête.</li>
+ensuite renvoyé à l’agent et le pipeline reprend à l’étape 2 (d’où le terme
+de “<strong>boucle</strong> agentique”). Si l’agent n’a pas émis de demande d’appel de
+fonction, le texte qu’il a généré est envoyé à l’utilisateur et le pipeline
+s’arrête.</li>
 </ol>
 
 <p>* Il s’agit essentiellement de vérifier que la fonction fait bien partie de
-celles fournies à l’agent dans son <em>system prompt</em>, et que les inputs de
-celle-ci sont corrects (nom et types des arguments de la fonction).</p>
+celles fournies à l’agent, et que les inputs de celle-ci sont corrects (nom et
+types des arguments de la fonction).</p>
 
 <p><img src="/assets/boucle-agentique.svg" alt="Boucle agentique" style="max-width: 100%;" /></p>
 
@@ -146,10 +146,10 @@ plutôt que de toujours laisser cette décision au LLM.</p>
 <p>Par exemple, une fonction qui soumet un formulaire, si elle échoue, peut clore
 la boucle afin d’éviter que le LLM ne retente l’action car le contexte n’y est
 pas propice (éviter de surcharger l’infra, connaissance a priori qu’un <em>retry</em>
-sort toujours en échec sur un type d’appel d’API, etc.). Ou inversement, on
-peut concevoir un <em>tool</em> qui ne met fin à la boucle que si son exécution se
-termine avec succès, pour justement permettre au LLM de corriger et réessayer
-en cas d’échec.</p>
+est inutile sur un type d’appel d’API, etc.). Ou inversement, on peut concevoir
+un <em>tool</em> qui ne met fin à la boucle que si son exécution se termine avec
+succès, pour justement permettre au LLM de corriger et réessayer en cas
+d’échec.</p>
 
 <p>Cela évite de recourir à des stratagèmes qui consistent à intégrer, dans le
 retour de la fonction, des instructions au LLM lui indiquant de ne pas retenter
@@ -166,19 +166,19 @@ sensibles ou non idempotentes.</p>
 
 <h1 id="court-circuiter-le-llm">Court-circuiter le LLM</h1>
 
-<p>Semblable au précédent, ce marqueur pourrait être émis au retour d’un <em>tool
+<p>A l’instar du précédent, un marqueur pourrait être émis au retour d’un <em>tool
 call</em> et signifier la fin de la boucle, mais avec une nuance importante : le
 retour de la fonction doit aller directement à l’utilisateur. Le LLM n’a alors
 pas accès à ce résultat.</p>
 
-<p>Prenons l’exemple d’un <em>tool</em> qui exécute une requête SQL de type <code class="language-plaintext highlighter-rouge">SELECT</code> et
-qui retourne un grand nombre de lignes. Si l’objectif de ce <em>tool</em> est de
-fournir le résultat exact de la requête à l’utilisateur (par exemple pour un
-export ou une consultation directe), alors faire transiter ces lignes par le
-LLM n’a aucun intérêt : au mieux il les recopie à l’identique en consommant des
-tokens et en ajoutant de la latence, au pire il les tronque ou en altère le
-contenu. Le marqueur permet ici de court-circuiter le LLM et de remettre le jeu
-de données directement à l’utilisateur, préservant ainsi son intégrité.</p>
+<p>Prenons l’exemple d’un <em>tool</em> qui exécute un export de données. Si l’objectif
+de ce <em>tool</em> est de fournit le résultat exact de l’export à l’utilisateur (pour
+réaliser un <em>reporting</em> ou simplement consulter les données), alors faire
+transiter ce résultat par le LLM n’a aucun intérêt : au mieux il les recopie à
+l’identique en consommant des tokens et en ajoutant de la latence, au pire il
+les tronque ou en altère le contenu. Le marqueur permet ici de court-circuiter
+le LLM et de remettre le jeu de données directement à l’utilisateur, préservant
+ainsi son intégrité.</p>
 
 <p>Autre exemple : un <em>tool</em> qui retourne des informations qu’on ne souhaite pas
 exposer au LLM. Il peut s’agir de données sensibles pour lesquelles on veut
@@ -219,16 +219,21 @@ etc.). La proposition consiste donc à étendre le mécanisme aux opérations
 d’exécution (j’ai évoqué les <em>tools</em>, mais cela pourrait également s’appliquer
 aux <em>resources</em> par exemple).</p>
 
-<h1 id="points-en-suspens">Points en suspens</h1>
+<h1 id="la-coeur-du-problème">La coeur du problème</h1>
 
-<p>Ces propositions restent des idées, avec des points d’attention laissés
-volontairement en suspens, pour susciter la discussion. Je ne dis pas
-grand-chose sur la forme des <em>metadata</em> à renvoyer, ni ne tranche sur la nature
-des marqueurs pour les 2 premières propositions (le client MCP peut-il les
-ignorer ?). Je n’aborde pas la façon de combler le “trou” dans l’historique
-conversationnel induit par le marqueur de retour immédiat. Et je ne rentre pas
-dans le détail du mécanisme de pagination (utilisation d’un curseur ? d’un
-offset ?).</p>
+<p>Un agent peut être implémentée sans utiliser de serveur MCP. C’est d’ailleurs
+un choix d’architecture assez commun, notamment s’agissant des agents de code
+(Claude Code, Gemini CLI, OpenCode, etc.). MCP, quant à lui, contraint en
+grande partie l’implémentation de la boucle agentique car il implique une
+abstraction de la nature des <em>tools</em> fournis à l’agent. Comme mentionné plus
+haut, l’un des apports de MCP est de pouvoir généraliser la logique qui
+sous-tend cette boucle. En d’autres termes, l’implémentation d’un agent peut
+faire abstraction des <em>tools</em> et serveurs MCP fournis à celui-ci.</p>
+
+<p>Pour certains cas d’usage, cela constitue davantage un frein à l’utilisation de
+MCP qu’un réel atout technique. Les propositions présentée dans cet article
+tentent donc de lever une partie des contraintes imposées par MCP afin d’en
+facilitant la diffusion et la standardisation.</p>
 
 <p>Ces propositions méritent encore d’être mûries avant d’être soumises à la
 communauté MCP. Ce sera l’objet, peut-être, d’un prochain article.</p>
