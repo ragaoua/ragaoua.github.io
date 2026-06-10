@@ -3,3 +3,179 @@
 
 // Rouge syntax highlighting (github)
 @import "syntax-highlighting";
+
+// Dark mode — follows OS preference via prefers-color-scheme
+@media (prefers-color-scheme: dark) {
+  $dark-bg: #1a1a1a;
+  $dark-bg-elevated: #242424;
+  $dark-text: #e5e5e5;
+  $dark-text-muted: #999;
+  $dark-border: #333;
+  $dark-link-hover: #4ab8d1;
+
+  body {
+    background-color: $dark-bg;
+    color: $dark-text;
+  }
+
+  a {
+    color: $dark-text;
+
+    &:focus,
+    &:hover {
+      color: $dark-link-hover;
+    }
+  }
+
+  blockquote {
+    color: $dark-text-muted;
+  }
+
+  hr {
+    border-top-color: $dark-border;
+  }
+
+  header.masthead {
+    background-color: $dark-bg;
+
+    // Top half lighter, bottom half darker — meets the body fade smoothly
+    .overlay {
+      background: linear-gradient(to bottom, rgba($gray-900, 0.3), rgba($gray-900, 0.85));
+      opacity: 1;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, rgba($dark-bg, 0), $dark-bg);
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+
+  #mainNav {
+    border-bottom-color: $dark-border;
+    background-color: $dark-bg;
+
+    .navbar-brand,
+    .navbar-toggler {
+      color: $dark-text;
+    }
+
+    @media only screen and (min-width: 992px) {
+      background: transparent;
+      border-bottom-color: transparent;
+
+      &.is-fixed {
+        border-bottom-color: $dark-border;
+        background-color: rgba($dark-bg, 0.9);
+
+        .navbar-brand,
+        .navbar-nav > li.nav-item > a {
+          color: $dark-text;
+
+          &:focus,
+          &:hover {
+            color: $dark-link-hover;
+          }
+        }
+      }
+    }
+  }
+
+  .post-preview {
+    > a {
+      color: $dark-text;
+
+      &:focus,
+      &:hover {
+        color: $dark-link-hover;
+      }
+    }
+
+    > .post-meta {
+      color: $dark-text-muted;
+
+      > a {
+        color: $dark-text;
+
+        &:focus,
+        &:hover {
+          color: $dark-link-hover;
+        }
+      }
+    }
+  }
+
+  // Code blocks & inline code
+  .highlighter-rouge .highlight,
+  .highlight {
+    background-color: #1e1e1e;
+  }
+
+  code.highlighter-rouge {
+    background-color: $dark-bg-elevated;
+    color: #f0f0f0;
+  }
+
+  // Syntax highlighting — GitHub Dark-ish palette
+  .highlight {
+    color: #c9d1d9;
+
+    .c, .c1, .cm, .ch, .cd, .cpf, .cs, .cp {
+      color: #8b949e;
+    }
+    .k, .kc, .kd, .kn, .kp, .kr, .kv {
+      color: #ff7b72;
+    }
+    .kt {
+      color: #ffa657;
+    }
+    .o, .ow {
+      color: #ff7b72;
+    }
+    .s, .s1, .s2, .sa, .sb, .sc, .sd, .se, .sh, .si, .sx, .dl, .sr, .ss {
+      color: #a5d6ff;
+    }
+    .m, .mb, .mf, .mh, .mi, .mo, .mx, .il {
+      color: #79c0ff;
+    }
+    .na, .no, .vc, .vg, .vi, .nv, .vm, .nb, .bp {
+      color: #79c0ff;
+    }
+    .nc, .nd, .ne, .nf, .fm, .nl {
+      color: #d2a8ff;
+    }
+    .nn {
+      color: #c9d1d9;
+    }
+    .nt {
+      color: #7ee787;
+    }
+    .gd {
+      color: #ffdcd7;
+      background-color: #67060c;
+    }
+    .gi {
+      color: #aff5b4;
+      background-color: #033a16;
+    }
+    .gr, .gt {
+      color: #ff7b72;
+    }
+    .gh, .gu {
+      color: #79c0ff;
+    }
+    .err {
+      color: #f85149;
+      background-color: #67060c;
+    }
+    .w {
+      color: #484f58;
+    }
+  }
+}
