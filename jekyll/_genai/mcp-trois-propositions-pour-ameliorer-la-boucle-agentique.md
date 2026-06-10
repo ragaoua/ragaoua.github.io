@@ -35,7 +35,10 @@ agent, c'est finalement un pipeline assez simple :
 celles fournies à l'agent, et que les inputs de celle-ci sont corrects (nom et
 types des arguments de la fonction).
 
-<img src="/assets/boucle-agentique.svg" alt="Boucle agentique" style="max-width: 100%;">
+<picture>
+    <source srcset="/assets/boucle-agentique.dark.svg" media="(prefers-color-scheme: dark)">
+    <img src="/assets/boucle-agentique.svg" alt="Boucle agentique" style="max-width: 100%;">
+</picture>
 
 C'est justement sur cette boucle agentique que mes propositions se concentrent.
 L'objectif est d'enrichir la réponse envoyée par le serveur à un client MCP
