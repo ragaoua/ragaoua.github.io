@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "MCP : les élicitations, ce mécanisme dont on ne parle pas assez"
-date: 2026-06-10
+date: 2026-06-14
 ---
 
 Le protocole MCP offre aux agents IA un moyen d'interagir avec des systèmes
@@ -106,8 +106,6 @@ lui-même n'a pas accès aux identifiants de l'utilisateur, seulement à l'_ID
 token_ qui lui a été fourni par le _provider_ OIDC. Il s'agit d'une
 redirection totale effectuée vers la mire d'authentification permettant à
 l'utilisateur de s'authentifier de manière fiable et sécurisée.
-
-<!-- Insérer un bout de code en exemple -->
 
 # Pourquoi ne pas simplement demander à l'agent ?
 
