@@ -19,7 +19,7 @@ Il s'agit des **élicitations**.
 
 Un agent peut décider, à tout moment, d'exécuter des _tools_ (fournis notamment
 par un serveur MCP) pour répondre à une demande, et ce même si l'utilisateur ne
-formule pas explicitement la demande.
+l'a pas explicitement formulée.
 En cela, on peut qualifier ces systèmes "d'agents **autonomes**" car ils disposent
 d'une **capacité de prise de décisions** : ils peuvent réaliser des actions
 intermédiaires pour atteindre un but final. C'est ce qui fait la puissance et
@@ -41,7 +41,7 @@ Les élicitations ont été intégrées à la spécification MCP par la révisio
 `2025-06-18`, et répondent exactement à cette problématique. Ce mécanisme
 permet à un serveur MCP d'émettre une demande **à destination de
 l'utilisateur** lors de l'exécution d'un _tool_, de sorte à intégrer la
-nécessité d'une intervention humaine dans le processus d'appel de fonction.
+une intervention humaine dans le processus d'appel de fonction.
 
 Durant l'exécution d'un _tool_, le serveur MCP peut décider d'émettre une
 élicitation sur la base de conditions prédéfinies. Cela se traduit par une
@@ -95,7 +95,7 @@ dans le mode "URL". Cela lui permet de rediriger le client (l'application qui
 implémente l'agent et qui est présentée à l'utilisateur) vers une URL, qui est
 la mire d'authentification OIDC dans notre cas. L'utilisateur saisit alors ses
 identifiants, et un _ID token_ est renvoyé au serveur MCP qui peut l'utiliser
-pour accéder en écriture au système de gestion de ticket sous-jacent.
+pour accéder en écriture au système de gestion de tickets sous-jacent.
 
 On peut imaginer que le serveur MCP mette l'_ID token_ en cache, auquel cas il
 vérifiera d'abord la présence du _token_ pour la session MCP courante, et ne
