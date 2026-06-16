@@ -64,7 +64,7 @@ de sécurité ou dans une logique de contrôle de la fenêtre de contexte.
 
 # Des cas d'usage concrets
 
-Illustrons l'intérêt des élicitations par un exemple concret, démontrant deux
+Illustrons l'intérêt des élicitations par un exemple concret, démontrant 2
 usages possibles de la fonctionnalité :
 
 Un agent doit avoir accès à un système de gestion de tâches (Jira, Linear,
