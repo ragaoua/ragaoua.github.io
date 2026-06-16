@@ -100,7 +100,7 @@ Il s’agit des <strong>élicitations</strong>.</p>
 
 <p>Un agent peut décider, à tout moment, d’exécuter des <em>tools</em> (fournis notamment
 par un serveur MCP) pour répondre à une demande, et ce même si l’utilisateur ne
-formule pas explicitement la demande.
+l’a pas explicitement formulée.
 En cela, on peut qualifier ces systèmes “d’agents <strong>autonomes</strong>” car ils disposent
 d’une <strong>capacité de prise de décisions</strong> : ils peuvent réaliser des actions
 intermédiaires pour atteindre un but final. C’est ce qui fait la puissance et
@@ -122,7 +122,7 @@ une infra ou un service, pollution du contexte de l’agent, etc.</p>
 <code class="language-plaintext highlighter-rouge">2025-06-18</code>, et répondent exactement à cette problématique. Ce mécanisme
 permet à un serveur MCP d’émettre une demande <strong>à destination de
 l’utilisateur</strong> lors de l’exécution d’un <em>tool</em>, de sorte à intégrer la
-nécessité d’une intervention humaine dans le processus d’appel de fonction.</p>
+une intervention humaine dans le processus d’appel de fonction.</p>
 
 <p>Durant l’exécution d’un <em>tool</em>, le serveur MCP peut décider d’émettre une
 élicitation sur la base de conditions prédéfinies. Cela se traduit par une
@@ -176,7 +176,7 @@ dans le mode “URL”. Cela lui permet de rediriger le client (l’application 
 implémente l’agent et qui est présentée à l’utilisateur) vers une URL, qui est
 la mire d’authentification OIDC dans notre cas. L’utilisateur saisit alors ses
 identifiants, et un <em>ID token</em> est renvoyé au serveur MCP qui peut l’utiliser
-pour accéder en écriture au système de gestion de ticket sous-jacent.</p>
+pour accéder en écriture au système de gestion de tickets sous-jacent.</p>
 
 <p>On peut imaginer que le serveur MCP mette l’<em>ID token</em> en cache, auquel cas il
 vérifiera d’abord la présence du <em>token</em> pour la session MCP courante, et ne
