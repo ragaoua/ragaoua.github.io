@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>
+    MCP : les élicitations, ce mécanisme dont on ne parle pas assez - Arc
+    
+  </title>
+
+  <meta name="description" content="Le protocole MCP offre aux agents IA un moyen d’interagir avec des systèmes externes. Il permet ainsi de doter un agent de la capacité d’accéder à des donnée...">
+
+  <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+  <script src="https://use.fontawesome.com/releases/v5.15.3/js/all.js" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="https://ragaoua.github.io/genai/mcp-elicitations.html">
+  <link rel="alternate" type="application/rss+xml" title="Arc" href="/feed.xml">
+
+</head>
+
+
+<body>
+
+  <!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="/">Arc</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      Menu
+      <i class="fa fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">A propos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/posts">Articles</a>
+        </li>
+        <!--
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        -->
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <!-- Page Header -->
+
+  <header class="masthead">
+    
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="post-heading">
+            <h1>MCP : les élicitations, ce mécanisme dont on ne parle pas assez</h1>
+            
+            <span class="meta">
+              14-06-2026 &middot; <span class="reading-time" title="Estimated read time">
+  
+   9 mins </span>
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+
+        <p>Le protocole MCP offre aux agents IA un moyen d’interagir avec des systèmes
+externes. Il permet ainsi de doter un agent de la capacité d’accéder à des
+données et même de réaliser des actions en écriture, donnant tout son sens au
+terme “agent”.</p>
+
+<p>La plupart des discussions autour de MCP évoquent les <em>tools</em>, parfois les
+<em>resources</em> ou les <em>prompts</em>. Parmi les mécanismes définis par la
+spécification, l’un d’eux est, il me semble, trop peu commenté voire méconnu
+alors qu’il adresse un point primordial de l’interaction agent-utilisateur.
+Il s’agit des <strong>élicitations</strong>.</p>
+
+<h1 id="une-épée-à-double-tranchant">Une épée à double tranchant</h1>
+
+<p>Un agent peut décider, à tout moment, d’exécuter des <em>tools</em> (fournis notamment
+par un serveur MCP) pour répondre à une demande, et ce même si l’utilisateur ne
+formule pas explicitement la demande.
+En cela, on peut qualifier ces systèmes “d’agents <strong>autonomes</strong>” car ils disposent
+d’une <strong>capacité de prise de décisions</strong> : ils peuvent réaliser des actions
+intermédiaires pour atteindre un but final. C’est ce qui fait la puissance et
+l’intérêt de ces systèmes.</p>
+
+<p>Cette capacité peut néanmoins être la source de problèmes. Puisqu’il est
+autonome dans sa prise de décision, il arrive qu’un agent fasse un choix de
+<em>tool</em> inadapté à l’objectif formulé.
+Si l’action implique des opérations d’écriture voire de suppression, l’impact
+d’une telle erreur peut être important, voire catastrophique (on a tous lu
+des témoignages décrivant comment un agent a supprimé une base de données
+entière par erreur). Même pour des <em>tools</em> de lecture, l’effet peut s’avérer
+significatif : surconsommation de tokens, latence accrue, charge inutile sur
+une infra ou un service, pollution du contexte de l’agent, etc.</p>
+
+<h1 id="les-élicitations">Les élicitations</h1>
+
+<p>Les élicitations ont été intégrées à la spécification MCP par la révision
+<code class="language-plaintext highlighter-rouge">2025-06-18</code>, et répondent exactement à cette problématique. Ce mécanisme
+permet à un serveur MCP d’émettre une demande <strong>à destination de
+l’utilisateur</strong> lors de l’exécution d’un <em>tool</em>, de sorte à intégrer la
+nécessité d’une intervention humaine dans le processus d’appel de fonction.</p>
+
+<p>Durant l’exécution d’un <em>tool</em>, le serveur MCP peut décider d’émettre une
+élicitation sur la base de conditions prédéfinies. Cela se traduit par une
+requête comprenant un message décrivant la demande. L’utilisateur doit alors
+répondre pour fournir les informations demandées (qui peuvent prendre la forme
+d’une confirmation de l’action) afin de permettre au serveur MCP de reprendre
+l’exécution du <em>tool</em>.</p>
+
+<p>Notons que l’agent n’a pas connaissance de ce processus. De son point de vue,
+il a demandé à exécuter une fonction et en a reçu le retour. L’interaction
+entre le serveur MCP et l’utilisateur est donc tout à fait transparente et
+confidentielle au regard du LLM. Ce mécanisme peut être utilisé pour échanger
+des informations dont le LLM ne doit pas avoir connaissance, pour des raisons
+de sécurité ou dans une logique de contrôle de la fenêtre de contexte.</p>
+
+<picture>
+    <source srcset="/assets/elicitations.dark.svg" media="(prefers-color-scheme: dark)" />
+    <img src="/assets/elicitations.svg" alt="Elicitations" style="max-width: 100%;" />
+</picture>
+
+<h1 id="des-cas-dusage-concrets">Des cas d’usage concrets</h1>
+
+<p>Illustrons l’intérêt des élicitations par un exemple concret, démontrant deux
+usages possibles de la fonctionnalité :</p>
+
+<p>Un agent doit avoir accès à un système de gestion de tâches (Jira, Linear,
+ServiceNow, etc.). Il est alors connecté à un serveur MCP exposant des <em>tools</em>
+permettant de créer, lister, consulter, modifier et supprimer des tickets.</p>
+
+<p>Les opérations de suppression de ticket étant irréversibles dans ce cas,
+l’agent ne doit pas pouvoir exécuter le <em>tool</em> de suppression sans validation
+humaine. Le serveur MCP peut donc, avant de procéder, émettre une élicitation
+pour informer l’utilisateur de l’opération et lui demander confirmation.</p>
+
+<p>Dans une interface, cela peut se traduire par une boîte de dialogue
+apparaissant lorsque l’agent tente de supprimer un ticket. La fenêtre
+informerait l’utilisateur du numéro de ticket en cours de suppression et
+demanderait confirmation. Si la réponse est négative, le serveur renverra une
+réponse à l’agent l’informant que l’opération a été déclinée.</p>
+
+<p>Imaginons désormais que les opérations d’écriture (créer, modifier et supprimer
+un ticket) nécessitent une authentification nominative afin d’associer les
+actions réalisées par l’agent à l’utilisateur de celui-ci, pour des raisons de
+traçabilité. Les opérations de lecture, quant à elles, sont accessibles à tous
+sans authentification préalable. L’authentification, dans notre exemple, se
+fait au travers d’un <em>ID token</em> fourni par un <em>provider</em> OIDC.</p>
+
+<p>Pour répondre à ces exigences, le serveur MCP peut de nouveau tirer parti des
+élicitations. Pour les 3 <em>tools</em> d’écriture, le serveur émet une élicitation
+dans le mode “URL”. Cela lui permet de rediriger le client (l’application qui
+implémente l’agent et qui est présentée à l’utilisateur) vers une URL, qui est
+la mire d’authentification OIDC dans notre cas. L’utilisateur saisit alors ses
+identifiants, et un <em>ID token</em> est renvoyé au serveur MCP qui peut l’utiliser
+pour accéder en écriture au système de gestion de ticket sous-jacent.</p>
+
+<p>On peut imaginer que le serveur MCP mette l’<em>ID token</em> en cache, auquel cas il
+vérifiera d’abord la présence du <em>token</em> pour la session MCP courante, et ne
+renverra l’utilisateur vers la mire d’authentification que s’il est absent.</p>
+
+<p>Il est important de préciser que, dans le processus décrit, le serveur MCP
+lui-même n’a pas accès aux identifiants de l’utilisateur, seulement à l’<em>ID
+token</em> qui lui a été fourni par le <em>provider</em> OIDC. Il s’agit d’une
+redirection totale effectuée vers la mire d’authentification permettant à
+l’utilisateur de s’authentifier de manière fiable et sécurisée.</p>
+
+<h1 id="pourquoi-ne-pas-simplement-demander-à-lagent-">Pourquoi ne pas simplement demander à l’agent ?</h1>
+
+<p>D’aucuns pourraient penser que les élicitations ne font qu’apporter une
+solution à un problème déjà résolu : pourquoi ce mécanisme alors qu’il
+suffirait d’ordonner au LLM de demander confirmation à l’utilisateur pour
+certaines actions, ou le solliciter pour obtenir des informations
+complémentaires ?</p>
+
+<p>Confier cette responsabilité à l’agent, c’est d’abord renoncer à toute garantie
+qu’elle soit assumée. Rappelons que les LLM sont des outils non déterministes,
+dont il est difficile de prévoir le comportement : rien n’empêche un agent
+d’omettre la demande de confirmation. À cela s’ajoutent un coût et une latence
+supplémentaires pour ce qui peut être une communication directe entre
+l’utilisateur et le serveur MCP.</p>
+
+<p>Par ailleurs, transiter par le LLM implique que l’ensemble des informations
+échangées avec l’utilisateur passent par la fenêtre de contexte de l’agent, y
+compris celles qui ne lui sont d’aucune utilité. Cette pollution du contexte a
+un impact direct sur les performances et le coût de l’agent. Plus encore,
+certaines informations sensibles (identifiants, données personnelles, secrets)
+ne doivent tout simplement pas être exposées au LLM, ce qui restreint d’autant
+les cas d’usage envisageables avec cette méthode.</p>
+
+<p>Enfin, les élicitations offrent nativement des fonctionnalités qu’un LLM ne
+saurait fournir seul, comme la redirection de l’utilisateur vers une URL
+externe.</p>
+
+<h1 id="adoption-et-perspectives">Adoption et perspectives</h1>
+
+<p>À mesure que les agents s’installent dans des contextes de production, ce type
+de mécanisme va devenir incontournable.</p>
+
+<p>Seulement, le support des élicitations est encore limité, en particulier côté
+client. Parmi les agents de code populaires, on peut notamment citer Gemini CLI
+et OpenCode qui ne tiennent toujours pas compte de ce mécanisme, bien que la
+demande soit remontée régulièrement au travers des issues GitHub. Côté serveur,
+l’adoption peine également à décoller car la plupart des implémentations MCP
+s’en tiennent aux <em>tools</em>, sans tirer parti des autres possibilités offertes
+par le protocole.</p>
+
+<p>Malgré tout, MCP est un standard jeune, porté par une communauté active, et qui
+évolue rapidement. Les élicitations en sont elles-mêmes l’illustration, ayant
+été ajoutées au protocole en cours de route. D’autres fonctionnalités pourraient
+suivre et venir enrichir l’arsenal à disposition des concepteurs de serveurs
+MCP. J’ai d’ailleurs partagé quelques <a href="/genai/mcp-trois-propositions-pour-ameliorer-la-boucle-agentique.html">propositions d’amélioration de la boucle
+agentique</a> dans un
+autre article. Espérons que l’adoption, côté client comme côté serveur, emboîte
+le pas, pour que ce type de mécanisme devienne la norme plutôt que l’exception.</p>
+
+
+        <hr>
+
+        <div class="clearfix">
+
+          
+          <a class="btn btn-primary float-left" href="/genai/mcp-trois-propositions-pour-ameliorer-la-boucle-agentique.html" data-toggle="tooltip" data-placement="top" title="MCP : trois propositions pour améliorer la boucle agentique">&larr; <span class="d-none d-md-inline">
+              Article </span>précédent</a>
+          
+          
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Footer -->
+
+<hr>
+
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <ul class="list-inline text-center">
+          
+          <li class="list-inline-item">
+            <a href="mailto:reda.agaoua@gmail.com">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="far fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          
+          
+          <li class="list-inline-item">
+            <a href="https://www.linkedin.com/in/reda-agaoua">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+          <li class="list-inline-item">
+            <a href="https://github.com/ragaoua">
+              <span class="fa-stack fa-lg">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+            </a>
+          </li>
+          
+          
+        </ul>
+        <p class="copyright text-muted">Copyright &copy; Reda A. 2026</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+
+</html>
