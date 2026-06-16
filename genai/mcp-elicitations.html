@@ -178,9 +178,10 @@ la mire d’authentification OIDC dans notre cas. L’utilisateur saisit alors s
 identifiants, et un <em>ID token</em> est renvoyé au serveur MCP qui peut l’utiliser
 pour accéder en écriture au système de gestion de tickets sous-jacent.</p>
 
-<p>On peut imaginer que le serveur MCP mette l’<em>ID token</em> en cache, auquel cas il
-vérifiera d’abord la présence du <em>token</em> pour la session MCP courante, et ne
-renverra l’utilisateur vers la mire d’authentification que s’il est absent.</p>
+<p><em>Note</em>: On peut imaginer que le serveur MCP mette l’<em>ID token</em> en cache, auquel
+cas il vérifiera d’abord la présence du <em>token</em> pour la session MCP courante,
+et ne renverra l’utilisateur vers la mire d’authentification que s’il est
+absent.</p>
 
 <p>Il est important de préciser que, dans le processus décrit, le serveur MCP
 lui-même n’a pas accès aux identifiants de l’utilisateur, seulement à l’<em>ID
